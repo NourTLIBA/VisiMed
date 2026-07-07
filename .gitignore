@@ -1,11 +1,9 @@
-# Miscellaneous
-*.class
-*.lock
-*.log
+# For Android emulator use: --dart-define=VISIMED_API_URL=http://10.0.2.2:8000/api
 *.pyc
-*.swp
-.buildlog/
-.history
+__pycache__/
+backend/db.sqlite3
+backend/.env
+.DS_Store
 
 
 
