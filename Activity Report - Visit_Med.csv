@@ -1,0 +1,9 @@
+ID_Visit,Date,Délégué,Nom Médecin,Genre,Specialite,Potentiel,Structure,Address,Wilaya,Nom_Commune,Telephone,Email,Nb Patient salle ,Durée (min),Qté Lecteur,Qté Vials (bte),Qté Brochure M,Qté Brochure Patient,Qté Affiche,Photo,Commentaire
+9a9a72cd,15/06/2026,MASSAID Takfarinas,Karim ZOURDANI,M,ENDO,A,,"Cité des 90 logements n°2, Akbou",Bejaïa,,68686868,xhxj@xbjxj.com,0-15,16-30,1,2,3,10,1,,
+61f5e3a9,15/06/2026,MASSAID Takfarinas,Djamila BELKHAMSA,F,ENDO,A,,"Guendouza, Akbou, Algérie",Bejaïa,,48184885,ddb@flail.dz,0-15,30,1,2,3,10,2,,
+dd9d63e2,15/06/2026,MASSAID Takfarinas,Maria HACIMI,F,ENDO,B,,"16 Rue Si Larbi Touati, Akbou 06001, Algérie",Bejaïa,,8481656,sbdbrtb@flé.fke,16-30,16-30,1,2,3,10,1,,
+ddacc0d2,15/06/2026,MASSAID Takfarinas,Mohand BOUMOULA,M,ENDO,A,,"7 Av. du 1er Novembre, Akbou 06001, Algérie",Bejaïa,,8884368594,sndbfb@ld.dje,0-15,16-30,1,2,3,5,1,,
+c811f9d5,15/06/2026,MASSAID Takfarinas,Nedir OULD DRIS,M,ENDO,A,,"Guendouza, Akbou, Algérie",Bejaïa,,335959594,soelnr@fnr.com,16-30,16-30,1,2,1,10,1,,
+19b57280,15/06/2026,MASSAID Takfarinas,Bilel CHIKHI,M,ENDO,A,,"Rue Frères Kherraz, Amizour, Algérie",Bejaïa,,8848658585,bdbdbr@ske.de,0-15,16-30,1,2,1,5,1,,
+f99435f8,30/06/2026,MASSAID Takfarinas,Trucmuche,F,MG,B,Cabinet Privé,"3 Rue Ali Cherif, Kouba 16048, Algérie",Alger,,12233345,hello@mnin.bla,16-30,16-30,1,2,1,10,1,Visit_Med_Images/f99435f8.Photo.173028.jpg,super docteur. emballée par l'appareil.
+b99c4641,30/06/2026,AMOUR Amira Manel,Tolstoi,M,PED,KOL,Cabinet de groupe,"1 Chemin de Sidi Yahia، Bir Mourad Raïs, Algérie",Alger,,11111,fzefz@vzd.gr,16-30,0-15,1,2,1,1,1,,
