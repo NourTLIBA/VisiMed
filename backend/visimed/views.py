@@ -13,6 +13,11 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import action
+from django.utils import timezone
+import datetime
+from django.conf import settings
+from django.contrib.auth.hashers import make_password
 
 from .models import Locality, User, UserRole, VisitRecord
 from .permissions import IsAdmin
@@ -28,12 +33,22 @@ class AuthTokenView(ObtainAuthToken):
     """Login — returns token + user profile."""
 
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        token = Token.objects.get(key=response.data["token"])
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+
+        token, created = Token.objects.get_or_create(user=user)
+        if not created:
+            expires_in = getattr(settings, "TOKEN_EXPIRED_AFTER_HOURS", 24)
+            is_expired = token.created < timezone.now() - datetime.timedelta(hours=expires_in)
+            if is_expired:
+                token.delete()
+                token = Token.objects.create(user=user)
+
         return Response(
             {
-                "token": response.data["token"],
-                "user": UserProfileSerializer(token.user).data,
+                "token": token.key,
+                "user": UserProfileSerializer(user).data,
             }
         )
 
@@ -42,6 +57,16 @@ class RepresentativeCRUDViewSet(viewsets.ModelViewSet):
     queryset = User.objects.exclude(role=UserRole.ADMIN)
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAdmin])
+    def reset_password(self, request, pk=None):
+        user = self.get_object()
+        new_password = request.data.get('password')
+        if not new_password:
+            return Response({"error": "Password is required"}, status=status.HTTP_400_BAD_REQUEST)
+        user.password = make_password(new_password)
+        user.save()
+        return Response({"status": "password set"})
 
 
 class VisitRecordViewSet(viewsets.ModelViewSet):

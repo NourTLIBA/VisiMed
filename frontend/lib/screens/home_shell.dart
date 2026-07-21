@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
+import '../widgets/language_selector.dart';
 import 'admin_screen.dart';
 import 'calendar_screen.dart';
 import 'login_screen.dart';
@@ -37,26 +40,26 @@ class _HomeShellState extends State<HomeShell> {
         ];
 
         final destinations = <NavigationDestination>[
-          const NavigationDestination(
-            icon: Icon(Icons.list_alt_outlined),
-            selectedIcon: Icon(Icons.list_alt),
-            label: 'Visits',
+          NavigationDestination(
+            icon: const Icon(Icons.list_alt_outlined),
+            selectedIcon: const Icon(Icons.list_alt),
+            label: AppLocalizations.of(context)!.visits,
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.calendar_month_outlined),
-            selectedIcon: Icon(Icons.calendar_month),
-            label: 'Calendar',
+          NavigationDestination(
+            icon: const Icon(Icons.calendar_month_outlined),
+            selectedIcon: const Icon(Icons.calendar_month),
+            label: AppLocalizations.of(context)!.calendar,
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.map_outlined),
-            selectedIcon: Icon(Icons.map),
-            label: 'Map',
+          NavigationDestination(
+            icon: const Icon(Icons.map_outlined),
+            selectedIcon: const Icon(Icons.map),
+            label: AppLocalizations.of(context)!.map,
           ),
           if (user.isAdmin)
-            const NavigationDestination(
-              icon: Icon(Icons.admin_panel_settings_outlined),
-              selectedIcon: Icon(Icons.admin_panel_settings),
-              label: 'Admin',
+            NavigationDestination(
+              icon: const Icon(Icons.admin_panel_settings_outlined),
+              selectedIcon: const Icon(Icons.admin_panel_settings),
+              label: AppLocalizations.of(context)!.roleAdmin,
             ),
         ];
 
@@ -86,6 +89,12 @@ class _HomeShellState extends State<HomeShell> {
               ],
             ),
             actions: [
+              ValueListenableBuilder<Locale>(
+                valueListenable: widget.state.currentLocale,
+                builder: (context, _, __) {
+                  return LanguageSelector(state: widget.state);
+                },
+              ),
               // Role badge
               Container(
                 margin: const EdgeInsets.only(right: 4),
@@ -214,8 +223,8 @@ class _HomeShellState extends State<HomeShell> {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Export failed: $e'),
-          backgroundColor: AppTheme.kolAccent,
+          content: Text('${AppLocalizations.of(context)!.error}: $e'),
+          backgroundColor: AppTheme.KOLAccent,
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

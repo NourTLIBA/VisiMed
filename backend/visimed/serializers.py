@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "role",
             "assigned_regions",
+            "telephone",
             "password",
             "is_active",
         ]
@@ -53,6 +54,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "last_name",
             "role",
             "assigned_regions",
+            "telephone",
         ]
         read_only_fields = fields
 
@@ -79,6 +81,7 @@ class VisitRecordSerializer(serializers.ModelSerializer):
             "specialty",
             "structure_type",
             "potential",
+            "gco_status",
             "address",
             "wilaya",
             "commune",
@@ -88,6 +91,7 @@ class VisitRecordSerializer(serializers.ModelSerializer):
             "duration_minutes",
             "qty_reader",
             "qty_vials",
+            "qty_meters",
             "qty_brochure_m",
             "qty_brochure_patient",
             "qty_affiche",

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
+import '../data/demo_data.dart';
+import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
+import '../widgets/language_selector.dart';
 import 'home_shell.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -47,21 +52,52 @@ class _LoginScreenState extends State<LoginScreen>
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => HomeShell(state: widget.state)),
       );
-    } catch (_) {
-      if (mounted) {
+    } on Exception catch (e) {
+      if (!mounted) return;
+      final msg = e.toString();
+      final isAuthError = msg.contains('400') ||
+          msg.contains('401') ||
+          msg.contains('Invalid') ||
+          msg.contains('credentials');
+      if (isAuthError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Login failed — check your credentials'),
-            backgroundColor: AppTheme.kolAccent,
+            content: Text(AppLocalizations.of(context)!.loginFailed),
+            backgroundColor: AppTheme.KOLAccent,
             behavior: SnackBarBehavior.floating,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
+      } else {
+        // Login succeeded but data loading had an error — navigate anyway
+        if (widget.state.user.value != null && mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => HomeShell(state: widget.state)),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login failed: $msg'),
+              backgroundColor: Colors.red.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }
       }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  void _loginDemo(AppUser demoUser) {
+    widget.state.loginDemo(demoUser);
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => HomeShell(state: widget.state)),
+    );
   }
 
   @override
@@ -72,14 +108,16 @@ class _LoginScreenState extends State<LoginScreen>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppTheme.primaryDark, AppTheme.primary, Color(0xFF3D52C0)],
+            colors: [AppTheme.primaryDark, AppTheme.primary, Color(0xFF1B4D3E)],
             stops: [0.0, 0.5, 1.0],
           ),
         ),
         child: SafeArea(
-          child: FadeTransition(
-            opacity: _fade,
-            child: Column(
+          child: Stack(
+            children: [
+              FadeTransition(
+                opacity: _fade,
+                child: Column(
               children: [
                 // ── Logo hero ───────────────────────────────────────────
                 Expanded(
@@ -216,42 +254,55 @@ class _LoginScreenState extends State<LoginScreen>
                                       strokeWidth: 2.5,
                                       color: Colors.white),
                                 )
-                              : const Text('Sign In'),
+                              : Text(AppLocalizations.of(context)!.signIn),
                         ),
 
                         const Spacer(),
 
-                        // Demo credentials hint
+                        // ── Demo quick-login ─────────────────────────────
                         Container(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
                             color: AppTheme.surface,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(14),
                             border: Border.all(
                                 color: const Color(0xFFDDE2F0), width: 1),
                           ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.info_outline,
+                                  const Icon(Icons.bolt_rounded,
                                       size: 14, color: AppTheme.primary),
                                   const SizedBox(width: 6),
-                                  Text('Demo credentials',
-                                      style: TextStyle(
+                                  Text(AppLocalizations.of(context)!.quickDemoLogin,
+                                      style: const TextStyle(
                                           fontSize: 12,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.w700,
                                           color: AppTheme.primary)),
                                 ],
                               ),
+                              const SizedBox(height: 10),
+                              _DemoButton(
+                                label: AppLocalizations.of(context)!.roleAdmin,
+                                icon: Icons.admin_panel_settings_outlined,
+                                color: AppTheme.primary,
+                                onTap: () => _loginDemo(kDemoAdmin),
+                              ),
                               const SizedBox(height: 6),
-                              Text(
-                                'admin / admin123\nmedrep1 / med123\npharmrep1 / pharma123',
-                                style: TextStyle(
-                                    fontSize: 11.5,
-                                    color: Colors.grey.shade600,
-                                    height: 1.6),
+                              _DemoButton(
+                                label: AppLocalizations.of(context)!.roleMedRep,
+                                icon: Icons.medical_services_outlined,
+                                color: AppTheme.medical,
+                                onTap: () => _loginDemo(kDemoMedRep),
+                              ),
+                              const SizedBox(height: 6),
+                              _DemoButton(
+                                label: AppLocalizations.of(context)!.rolePharmaRep,
+                                icon: Icons.local_pharmacy_outlined,
+                                color: AppTheme.pharmaceutical,
+                                onTap: () => _loginDemo(kDemoPharmaRep),
                               ),
                             ],
                           ),
@@ -263,6 +314,64 @@ class _LoginScreenState extends State<LoginScreen>
               ],
             ),
           ),
+          Positioned(
+            top: 8,
+            right: 16,
+            child: ValueListenableBuilder<Locale>(
+              valueListenable: widget.state.currentLocale,
+              builder: (context, _, __) {
+                return LanguageSelector(state: widget.state);
+              },
+            ),
+          ),
+        ],
+      ),
+    ),
+      ),
+    );
+  }
+}
+
+class _DemoButton extends StatelessWidget {
+  const _DemoButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withAlpha(18),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withAlpha(60), width: 1),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+            ),
+            const Spacer(),
+            Icon(Icons.arrow_forward_ios_rounded, size: 12, color: color.withAlpha(160)),
+          ],
         ),
       ),
     );

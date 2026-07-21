@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key, required this.state});
@@ -24,14 +27,14 @@ class AdminScreen extends StatelessWidget {
               indicatorWeight: 3,
               labelStyle: const TextStyle(
                   fontWeight: FontWeight.w700, fontSize: 13),
-              tabs: const [
+              tabs: [
                 Tab(
-                  icon: Icon(Icons.bar_chart_outlined, size: 20),
+                  icon: const Icon(Icons.bar_chart_outlined, size: 20),
                   text: 'KPIs',
                 ),
                 Tab(
-                  icon: Icon(Icons.people_outline, size: 20),
-                  text: 'Representatives',
+                  icon: const Icon(Icons.people_outline, size: 20),
+                  text: AppLocalizations.of(context)!.activeReps,
                 ),
               ],
             ),
@@ -76,28 +79,28 @@ class _KpiPanel extends StatelessWidget {
               child: Row(
                 children: [
                   _CompactMetric(
-                    label: 'Total visits',
+                    label: AppLocalizations.of(context)!.totalVisits,
                     value: '${kpis.totalVisits}',
                     icon: Icons.assignment_turned_in_outlined,
                     color: AppTheme.primary,
                   ),
                   const SizedBox(width: 8),
                   _CompactMetric(
-                    label: 'Active reps',
+                    label: AppLocalizations.of(context)!.activeReps,
                     value: '${kpis.activeReps}',
                     icon: Icons.people_outline,
                     color: AppTheme.pharmaceutical,
                   ),
                   const SizedBox(width: 8),
                   _CompactMetric(
-                    label: 'Total vials',
+                    label: AppLocalizations.of(context)!.qtyVials,
                     value: '${kpis.totalVials}',
                     icon: Icons.science_outlined,
                     color: AppTheme.medical,
                   ),
                   const SizedBox(width: 8),
                   _CompactMetric(
-                    label: 'Total readers',
+                    label: AppLocalizations.of(context)!.qtyReader,
                     value: '${kpis.totalReaders}',
                     icon: Icons.devices_outlined,
                     color: AppTheme.accent,
@@ -110,7 +113,7 @@ class _KpiPanel extends StatelessWidget {
 
             // ── By visit type ──────────────────────────────────────────
             _SectionCard(
-              title: 'By Visit Type',
+              title: AppLocalizations.of(context)!.byType,
               icon: Icons.category_outlined,
               children: [
                 _StackedRatioBar(
@@ -119,7 +122,7 @@ class _KpiPanel extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 ...kpis.byVisitType.entries.map((e) {
-                  final label = e.key.toLowerCase().contains('med') ? 'Medical' : 'Pharmaceutical';
+                  final label = e.key.toLowerCase().contains('med') ? AppLocalizations.of(context)!.medical : AppLocalizations.of(context)!.pharmaceutical;
                   return _BreakdownRow(
                     label: label,
                     value: e.value,
@@ -136,16 +139,16 @@ class _KpiPanel extends StatelessWidget {
 
             // ── By potential ───────────────────────────────────────────
             _SectionCard(
-              title: 'By Potential',
+              title: AppLocalizations.of(context)!.byPotential,
               icon: Icons.star_outline,
               children: kpis.byPotential.entries.map((e) {
-                final displayLabel = e.key == 'kol' ? 'KOL' : e.key.toUpperCase();
+                final displayLabel = e.key == 'KOL' ? 'KOL' : e.key.toUpperCase();
                 return _BreakdownRow(
                   label: displayLabel,
                   value: e.value,
                   total: kpis.totalVisits,
-                  color: e.key.toLowerCase() == 'kol'
-                      ? AppTheme.kolAccent
+                  color: e.key == 'KOL'
+                      ? AppTheme.KOLAccent
                       : AppTheme.primary,
                 );
               }).toList(),
@@ -579,21 +582,23 @@ class _RepPanelState extends State<_RepPanel> {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: roleColor.withAlpha(15),
-                                    borderRadius: BorderRadius.circular(20),
+                                if (r.telephone.isNotEmpty)
+                                  IconButton(
+                                    icon: const Icon(Icons.phone_outlined, color: AppTheme.primary, size: 20),
+                                    onPressed: () => launchUrl(Uri.parse('tel:${r.telephone}')),
                                   ),
-                                  child: Text(
-                                    isM ? 'Med' : 'Pharma',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: roleColor,
-                                    ),
+                                if (r.email.isNotEmpty)
+                                  IconButton(
+                                    icon: const Icon(Icons.email_outlined, color: AppTheme.primary, size: 20),
+                                    onPressed: () => launchUrl(Uri.parse('mailto:${r.email}')),
                                   ),
+                                IconButton(
+                                  icon: const Icon(Icons.edit_location_alt_outlined, color: AppTheme.primary, size: 20),
+                                  onPressed: () => _showEditRegionsDialog(context, r),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.lock_reset_outlined, color: AppTheme.primary, size: 20),
+                                  onPressed: () => _showResetPasswordDialog(context, r),
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.delete_outline,
@@ -619,7 +624,7 @@ class _RepPanelState extends State<_RepPanel> {
                                           FilledButton(
                                             style: FilledButton.styleFrom(
                                               backgroundColor:
-                                                  AppTheme.kolAccent,
+                                                  AppTheme.KOLAccent,
                                             ),
                                             onPressed: () =>
                                                 Navigator.pop(ctx, true),
@@ -655,6 +660,7 @@ class _RepPanelState extends State<_RepPanel> {
     final userCtrl = TextEditingController();
     final passCtrl = TextEditingController();
     final regionsCtrl = TextEditingController();
+    final phoneCtrl = TextEditingController();
     var role = 'med_rep';
 
     await showDialog<void>(
@@ -704,6 +710,15 @@ class _RepPanelState extends State<_RepPanel> {
                 ),
               ),
               const SizedBox(height: 12),
+              TextField(
+                controller: phoneCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Telephone',
+                  prefixIcon:
+                      Icon(Icons.phone_outlined, color: AppTheme.primary),
+                ),
+              ),
+              const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 value: role,
                 decoration: const InputDecoration(
@@ -735,6 +750,7 @@ class _RepPanelState extends State<_RepPanel> {
                   'password': passCtrl.text,
                   'role': role,
                   'assigned_regions': regionsCtrl.text.trim(),
+                  'telephone': phoneCtrl.text.trim(),
                   'email': '${userCtrl.text.trim()}@visimed.dz',
                 });
                 widget.state.representatives.value = [
@@ -747,6 +763,80 @@ class _RepPanelState extends State<_RepPanel> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> _showEditRegionsDialog(BuildContext context, AppUser r) async {
+    final regionsCtrl = TextEditingController(text: r.assignedRegions);
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Edit Regions'),
+        content: TextField(
+          controller: regionsCtrl,
+          decoration: const InputDecoration(
+            labelText: 'Regions (comma-separated)',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final updated = await widget.state.api.updateRepresentative(
+                r.id,
+                {'assigned_regions': regionsCtrl.text.trim()},
+              );
+              final reps = widget.state.representatives.value.toList();
+              final idx = reps.indexWhere((x) => x.id == r.id);
+              if (idx != -1) {
+                reps[idx] = updated;
+                widget.state.representatives.value = reps;
+              }
+              if (ctx.mounted) Navigator.pop(ctx);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showResetPasswordDialog(BuildContext context, AppUser r) async {
+    final passCtrl = TextEditingController();
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Reset Password for ${r.username}'),
+        content: TextField(
+          controller: passCtrl,
+          obscureText: true,
+          decoration: const InputDecoration(
+            labelText: 'New Password',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              if (passCtrl.text.isEmpty) return;
+              await widget.state.api.resetRepresentativePassword(r.id, passCtrl.text);
+              if (ctx.mounted) {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Password reset for ${r.username}')),
+                );
+              }
+            },
+            child: const Text('Reset'),
+          ),
+        ],
       ),
     );
   }

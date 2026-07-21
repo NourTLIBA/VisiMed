@@ -2,7 +2,8 @@ enum UserRole { admin, medRep, pharmaRep }
 
 enum VisitType { medical, pharmaceutical }
 
-enum TargetPotential { kol, A, B, C }
+// ignore: constant_identifier_names
+enum TargetPotential { KOL, A, B, C }
 
 UserRole userRoleFromString(String value) {
   switch (value) {
@@ -24,7 +25,7 @@ String visitTypeToApi(VisitType type) =>
 TargetPotential potentialFromString(String value) {
   switch (value) {
     case 'KOL':
-      return TargetPotential.kol;
+      return TargetPotential.KOL;
     case 'A':
       return TargetPotential.A;
     case 'B':
@@ -35,7 +36,7 @@ TargetPotential potentialFromString(String value) {
 }
 
 String potentialToApi(TargetPotential p) =>
-    p == TargetPotential.kol ? 'KOL' : p.name;
+    p == TargetPotential.KOL ? 'KOL' : p.name;
 
 class AppUser {
   AppUser({
@@ -44,6 +45,7 @@ class AppUser {
     required this.email,
     required this.role,
     this.assignedRegions = '',
+    this.telephone = '',
   });
 
   final int id;
@@ -51,6 +53,7 @@ class AppUser {
   final String email;
   final UserRole role;
   final String assignedRegions;
+  final String telephone;
 
   factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
         id: json['id'] as int,
@@ -58,6 +61,7 @@ class AppUser {
         email: json['email'] as String? ?? '',
         role: userRoleFromString(json['role'] as String? ?? 'med_rep'),
         assignedRegions: json['assigned_regions'] as String? ?? '',
+        telephone: json['telephone'] as String? ?? '',
       );
 
   bool get isAdmin => role == UserRole.admin;
@@ -96,6 +100,7 @@ class VisitRecord {
     this.specialty = 'N/A',
     required this.structureType,
     required this.potential,
+    this.gcoStatus = 'Pas intéressé(e)',
     required this.address,
     required this.wilaya,
     required this.commune,
@@ -105,6 +110,7 @@ class VisitRecord {
     this.durationMinutes = 0,
     this.qtyReader = 0,
     this.qtyVials = 0,
+    this.qtyMeters = 0,
     this.qtyBrochureM = 0,
     this.qtyBrochurePatient = 0,
     this.qtyAffiche = 0,
@@ -121,6 +127,7 @@ class VisitRecord {
   final String specialty;
   final String structureType;
   final TargetPotential potential;
+  final String gcoStatus;
   final String address;
   final String wilaya;
   final String commune;
@@ -130,6 +137,7 @@ class VisitRecord {
   final int durationMinutes;
   final int qtyReader;
   final int qtyVials;
+  final int qtyMeters;
   final int qtyBrochureM;
   final int qtyBrochurePatient;
   final int qtyAffiche;
@@ -146,6 +154,7 @@ class VisitRecord {
         specialty: json['specialty'] as String? ?? 'N/A',
         structureType: json['structure_type'] as String,
         potential: potentialFromString(json['potential'] as String),
+        gcoStatus: json['gco_status'] as String? ?? 'Pas intéressé(e)',
         address: json['address'] as String,
         wilaya: json['wilaya'] as String,
         commune: json['commune'] as String,
@@ -155,6 +164,7 @@ class VisitRecord {
         durationMinutes: json['duration_minutes'] as int? ?? 0,
         qtyReader: json['qty_reader'] as int? ?? 0,
         qtyVials: json['qty_vials'] as int? ?? 0,
+        qtyMeters: json['qty_meters'] as int? ?? 0,
         qtyBrochureM: json['qty_brochure_m'] as int? ?? 0,
         qtyBrochurePatient: json['qty_brochure_patient'] as int? ?? 0,
         qtyAffiche: json['qty_affiche'] as int? ?? 0,
@@ -173,6 +183,7 @@ class VisitRecord {
         'specialty': specialty,
         'structure_type': structureType,
         'potential': potentialToApi(potential),
+        'gco_status': gcoStatus,
         'address': address,
         'wilaya': wilaya,
         'commune': commune,
@@ -182,6 +193,7 @@ class VisitRecord {
         'duration_minutes': durationMinutes,
         'qty_reader': qtyReader,
         'qty_vials': qtyVials,
+        'qty_meters': qtyMeters,
         'qty_brochure_m': qtyBrochureM,
         'qty_brochure_patient': qtyBrochurePatient,
         'qty_affiche': qtyAffiche,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../l10n/app_localizations.dart';
+
 import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
@@ -27,6 +29,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         return Column(
           children: [
             TableCalendar<VisitRecord>(
+              locale: Localizations.localeOf(context).languageCode,
               firstDay: DateTime.utc(2020),
               lastDay: DateTime.utc(2030, 12, 31),
               focusedDay: _focused,
@@ -65,14 +68,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 },
                 defaultBuilder: (context, day, focused) {
                   final dayVisits = widget.state.visitsOnDay(day);
-                  final hasKol = dayVisits.any(
-                    (v) => v.potential == TargetPotential.kol,
+                  final hasKOL = dayVisits.any(
+                    (v) => v.potential == TargetPotential.KOL,
                   );
-                  if (!hasKol) return null;
+                  if (!hasKOL) return null;
                   return Container(
                     margin: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      border: Border.all(color: AppTheme.kolAccent, width: 2),
+                      border: Border.all(color: AppTheme.KOLAccent, width: 2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     alignment: Alignment.center,
@@ -83,7 +86,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             Expanded(
               child: _selected == null
-                  ? const Center(child: Text('Select a day'))
+                  ? Center(child: Text(AppLocalizations.of(context)!.selectADay))
                   : _DayVisitList(
                       state: widget.state,
                       day: _selected!,

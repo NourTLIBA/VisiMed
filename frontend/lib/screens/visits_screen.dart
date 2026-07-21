@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
@@ -33,9 +35,9 @@ class VisitsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'No visits yet',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.noVisitsYet,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: AppTheme.primaryDark,
@@ -43,7 +45,7 @@ class VisitsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Tap the button below to log your first visit',
+                  AppLocalizations.of(context)!.tapBelowToLog,
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
                 ),
               ],

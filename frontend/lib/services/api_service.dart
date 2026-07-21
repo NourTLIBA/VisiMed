@@ -6,8 +6,13 @@ import 'package:path_provider/path_provider.dart';
 
 import '../models/models.dart';
 
+class UnauthorizedException implements Exception {
+  final String message;
+  UnauthorizedException([this.message = 'Unauthorized']);
+}
+
 class ApiService {
-  ApiService({String? baseUrl})
+  ApiService({String? baseUrl, this.onUnauthorized})
       : baseUrl = baseUrl ??
             const String.fromEnvironment(
               'VISIMED_API_URL',
@@ -15,10 +20,13 @@ class ApiService {
             );
 
   final String baseUrl;
+  final void Function()? onUnauthorized;
   String? token;
 
   Map<String, String> get headers => {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Bypass-Tunnel-Reminder': 'true',
         if (token != null) 'Authorization': 'Token $token',
       };
 
@@ -111,6 +119,25 @@ class ApiService {
     return AppUser.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
   }
 
+  Future<AppUser> updateRepresentative(int id, Map<String, dynamic> payload) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/representatives/$id/'),
+      headers: headers,
+      body: jsonEncode(payload),
+    );
+    _ensureOk(response);
+    return AppUser.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+  }
+
+  Future<void> resetRepresentativePassword(int id, String newPassword) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/representatives/$id/reset_password/'),
+      headers: headers,
+      body: jsonEncode({'password': newPassword}),
+    );
+    _ensureOk(response);
+  }
+
   Future<void> deleteRepresentative(int id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/representatives/$id/'),
@@ -137,6 +164,10 @@ class ApiService {
   }
 
   void _ensureOk(http.Response response, {int expected = 200}) {
+    if (response.statusCode == 401) {
+      if (onUnauthorized != null) onUnauthorized!();
+      throw UnauthorizedException('Session expired. Please log in again.');
+    }
     if (response.statusCode != expected) {
       throw Exception('API error ${response.statusCode}: ${response.body}');
     }

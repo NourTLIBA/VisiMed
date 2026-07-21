@@ -15,6 +15,7 @@ class User(AbstractUser):
     assigned_regions = models.TextField(
         help_text="Comma-separated strings, e.g., 'Kabylie,Ouest'", blank=True
     )
+    telephone = models.CharField(max_length=20, blank=True, default='')
 
     class Meta:
         db_table = "vm_users"
@@ -44,6 +45,15 @@ class TargetPotential(models.TextChoices):
     C = "C", "Low Potential"
 
 
+class GCOStatus(models.TextChoices):
+    NOT_INTERESTED = "Pas intéressé(e)", "Pas intéressé(e)"
+    INTERESTED = "Intéressé(e)", "Intéressé(e)"
+    TRAINED = "Formé(e)", "Formé(e)"
+    ACCOUNT_CREATED = "Compte GCO créé", "Compte GCO créé"
+    ACCOUNT_INACTIVE = "Compte non actif", "Compte non actif"
+    ACCOUNT_ACTIVE = "Compte actif", "Compte actif"
+
+
 class VisitRecord(models.Model):
     id = models.CharField(max_length=50, primary_key=True)
     date = models.DateField(db_index=True)
@@ -61,6 +71,11 @@ class VisitRecord(models.Model):
     potential = models.CharField(
         max_length=5, choices=TargetPotential.choices, db_index=True
     )
+    gco_status = models.CharField(
+        max_length=50,
+        choices=GCOStatus.choices,
+        default=GCOStatus.NOT_INTERESTED,
+    )
 
     address = models.TextField()
     wilaya = models.CharField(max_length=100, db_index=True)
@@ -72,6 +87,7 @@ class VisitRecord(models.Model):
     duration_minutes = models.IntegerField(default=0)
     qty_reader = models.IntegerField(default=0)
     qty_vials = models.IntegerField(default=0)
+    qty_meters = models.IntegerField(default=0)
     qty_brochure_m = models.IntegerField(default=0)
     qty_brochure_patient = models.IntegerField(default=0)
     qty_affiche = models.IntegerField(default=0)
@@ -81,3 +97,4 @@ class VisitRecord(models.Model):
     class Meta:
         db_table = "vm_visit_records"
         ordering = ["-date"]
+
