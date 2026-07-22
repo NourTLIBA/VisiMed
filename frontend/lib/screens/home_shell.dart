@@ -67,25 +67,74 @@ class _HomeShellState extends State<HomeShell> {
 
         return Scaffold(
           appBar: AppBar(
+            backgroundColor: AppTheme.primaryDark,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(2),
+              child: Container(
+                height: 2,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      AppTheme.gold,
+                      AppTheme.gold,
+                      Colors.transparent,
+                    ],
+                    stops: [0.0, 0.2, 0.8, 1.0],
+                  ),
+                ),
+              ),
+            ),
             title: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Inline logo in AppBar
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    width: 28,
-                    height: 28,
-                    errorBuilder: (_, __, ___) => const Icon(
-                      Icons.local_hospital,
-                      size: 22,
-                      color: Colors.white,
+                // Art Deco logo frame
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(7),
+                    border: Border.all(color: AppTheme.gold.withAlpha(120), width: 1),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.local_hospital,
+                        size: 20,
+                        color: AppTheme.primary,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 10),
-                const Text('VisiMed'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'VISIMED',
+                      style: TextStyle(
+                        color: AppTheme.ricePaper,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2.5,
+                      ),
+                    ),
+                    Text(
+                      'Field CRM',
+                      style: TextStyle(
+                        color: AppTheme.gold.withAlpha(200),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
             actions: [
@@ -95,28 +144,32 @@ class _HomeShellState extends State<HomeShell> {
                   return LanguageSelector(state: widget.state);
                 },
               ),
-              // Role badge
+              // Art Deco role badge
               Container(
-                margin: const EdgeInsets.only(right: 4),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(30),
-                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppTheme.gold.withAlpha(100), width: 1),
+                  borderRadius: BorderRadius.circular(4),
+                  color: Colors.white.withAlpha(12),
                 ),
                 child: Text(
-                  user.username,
+                  user.username.toUpperCase(),
                   style: const TextStyle(
-                      fontSize: 13, fontWeight: FontWeight.w500),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: AppTheme.ricePaper,
+                  ),
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.download_outlined),
+                icon: const Icon(Icons.download_outlined, size: 20),
                 tooltip: 'Export data',
                 onPressed: () => _showExportSheet(context),
               ),
               IconButton(
-                icon: const Icon(Icons.logout_rounded),
+                icon: const Icon(Icons.logout_rounded, size: 20),
                 tooltip: 'Sign out',
                 onPressed: () {
                   widget.state.logout();
@@ -124,7 +177,7 @@ class _HomeShellState extends State<HomeShell> {
                     MaterialPageRoute(
                       builder: (_) => LoginScreen(state: widget.state),
                     ),
-                    (route) => false, // remove every route
+                    (route) => false,
                   );
                 },
               ),
@@ -133,27 +186,53 @@ class _HomeShellState extends State<HomeShell> {
           body: tabs[_index],
           bottomNavigationBar: Container(
             decoration: const BoxDecoration(
+              color: Colors.white,
               border: Border(
-                  top: BorderSide(color: Color(0xFFE8ECF5), width: 1)),
+                top: BorderSide(color: AppTheme.gold, width: 1.5),
+              ),
             ),
             child: NavigationBar(
+              backgroundColor: Colors.white,
+              indicatorColor: AppTheme.gold.withAlpha(35),
               selectedIndex: _index,
               onDestinationSelected: (i) => setState(() => _index = i),
               destinations: destinations,
             ),
           ),
           floatingActionButton: _index == 0 && !user.isAdmin
-              ? FloatingActionButton.extended(
-                  onPressed: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            VisitFormScreen(state: widget.state),
+              ? Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppTheme.gold, width: 1.2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primary.withAlpha(60),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Log Visit'),
+                    ],
+                  ),
+                  child: FloatingActionButton.extended(
+                    onPressed: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => VisitFormScreen(state: widget.state),
+                        ),
+                      );
+                    },
+                    backgroundColor: AppTheme.primary,
+                    foregroundColor: AppTheme.gold,
+                    elevation: 0,
+                    icon: const Icon(Icons.add),
+                    label: const Text(
+                      'LOG VISIT',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.5,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
                 )
               : null,
         );
