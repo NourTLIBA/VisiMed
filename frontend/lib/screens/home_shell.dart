@@ -288,11 +288,11 @@ class _HomeShellState extends State<HomeShell> {
     if (format == null || !context.mounted) return;
 
     try {
-      final file = await widget.state.api.downloadReport(format);
+      final fileNameOrPath = await widget.state.api.downloadReport(format);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Saved to ${file.path}'),
+          content: Text('Saved: $fileNameOrPath'),
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
