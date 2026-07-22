@@ -64,9 +64,22 @@ class VisitsScreen extends StatelessWidget {
               final typeColor = AppTheme.visitTypeColor(v.visitType);
               final potColor = AppTheme.potentialAccent(v.potential);
 
-              return Card(
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppTheme.gold.withAlpha(120), width: 1.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryDark.withAlpha(20),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    )
+                  ],
+                ),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                   onTap: () {}, // placeholder for detail view
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
