@@ -16,8 +16,12 @@ class AppState {
 
   final ValueNotifier<AppUser?> user = ValueNotifier(null);
   final ValueNotifier<List<VisitRecord>> visits = ValueNotifier([]);
-  final ValueNotifier<List<Locality>> localities = ValueNotifier([]);
   final ValueNotifier<List<String>> wilayas = ValueNotifier([]);
+  // Communes for the wilaya currently selected in the visit form. Filled
+  // on-demand and cached — the whole ~1500-row locality table is no longer
+  // downloaded on every login (see inconsistencies.md §1.6).
+  final ValueNotifier<List<String>> selectedCommunes = ValueNotifier([]);
+  final Map<String, List<String>> _communeCache = {};
   final ValueNotifier<AdminKpis?> kpis = ValueNotifier(null);
   final ValueNotifier<List<AppUser>> representatives = ValueNotifier([]);
   final ValueNotifier<List<Doctor>> doctors = ValueNotifier([]);
@@ -62,7 +66,10 @@ class AppState {
     user.value = demoUser;
     visits.value = List.of(kDemoVisits);
     wilayas.value = List.of(kDemoWilayas);
-    localities.value = List.of(kDemoLocalities);
+    _communeCache.clear();
+    for (final l in kDemoLocalities) {
+      (_communeCache[l.nomWilaya] ??= []).add(l.nomCommune);
+    }
     doctors.value = List.of(kDemoDoctors);
     products.value = List.of(kDemoProducts);
     if (demoUser.isStaff) {
@@ -76,7 +83,8 @@ class AppState {
     api.token = null;
     user.value = null;
     visits.value = [];
-    localities.value = [];
+    _communeCache.clear();
+    selectedCommunes.value = [];
     wilayas.value = [];
     kpis.value = null;
     representatives.value = [];
@@ -94,7 +102,6 @@ class AppState {
     try {
       visits.value = await api.fetchVisits();
       wilayas.value = await api.fetchWilayas();
-      localities.value = await api.fetchLocalities();
       products.value = await api.fetchProducts();
       doctors.value = await api.fetchDoctors();
       pharmacies.value = await api.fetchPharmacies();
@@ -123,7 +130,19 @@ class AppState {
   }
 
   Future<void> loadCommunesForWilaya(String wilaya) async {
-    localities.value = await api.fetchLocalities(wilaya: wilaya);
+    final cached = _communeCache[wilaya];
+    if (cached != null) {
+      selectedCommunes.value = cached;
+      return;
+    }
+    try {
+      final locs = await api.fetchLocalities(wilaya: wilaya);
+      final communes = locs.map((l) => l.nomCommune).toSet().toList()..sort();
+      _communeCache[wilaya] = communes;
+      selectedCommunes.value = communes;
+    } catch (_) {
+      selectedCommunes.value = const [];
+    }
   }
 
   List<VisitRecord> get filteredVisits {

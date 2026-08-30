@@ -448,16 +448,13 @@ class _VisitFormScreenState extends State<VisitFormScreen> {
               ),
               _fieldGap(),
 
-              ValueListenableBuilder<List<Locality>>(
-                valueListenable: widget.state.localities,
-                builder: (context, locs, _) {
-                  final communes = locs
-                      .where((l) => l.nomWilaya == _wilaya)
-                      .map((l) => l.nomCommune)
-                      .toSet()
-                      .toList();
+              ValueListenableBuilder<List<String>>(
+                valueListenable: widget.state.selectedCommunes,
+                builder: (context, communes, _) {
+                  final value =
+                      communes.contains(_commune) ? _commune : null;
                   return DropdownButtonFormField<String>(
-                    value: _commune,
+                    value: value,
                     decoration: const InputDecoration(
                       labelText: 'Commune',
                       prefixIcon: Icon(Icons.location_on_outlined, color: AppTheme.jade),

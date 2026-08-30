@@ -1,8 +1,11 @@
 import datetime
+
 from django.conf import settings
+from django.db import Error as DBError
 from django.utils import timezone
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+
 
 class ExpiringTokenAuthentication(TokenAuthentication):
     def authenticate_credentials(self, key):
@@ -15,14 +18,18 @@ class ExpiringTokenAuthentication(TokenAuthentication):
         if not token.user.is_active:
             raise AuthenticationFailed("User inactive or deleted.")
 
-        # Check if the token is expired
         expires_in = getattr(settings, "TOKEN_EXPIRED_AFTER_HOURS", 24)
         is_expired = token.created < timezone.now() - datetime.timedelta(
             hours=expires_in
         )
 
         if is_expired:
-            token.delete()
+            # Two concurrent requests can both reach here; tolerate the row
+            # already being gone (see inconsistencies.md §4.7).
+            try:
+                token.delete()
+            except (model.DoesNotExist, DBError):
+                pass
             raise AuthenticationFailed("Token has expired.")
 
         return (token.user, token)
