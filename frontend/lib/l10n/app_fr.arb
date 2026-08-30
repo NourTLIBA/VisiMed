@@ -61,5 +61,13 @@
     "tapBelowToLog": "Appuyez sur le bouton ci-dessous pour enregistrer votre première visite",
     "selectADay": "Sélectionnez un jour",
 
+    "team": "Équipe",
+    "doctors": "Médecins",
+    "alerts": "Alertes",
+    "performance": "Perf",
+    "roleManager": "Manager",
+    "doctorFile": "Fiche médecin",
+    "visitHistory": "Historique des visites",
+
     "language": "Langue"
 }

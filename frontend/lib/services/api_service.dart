@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 
 import '../models/models.dart';
+import 'report_download.dart';
 
 class UnauthorizedException implements Exception {
   final String message;
@@ -30,9 +29,11 @@ class ApiService {
         if (token != null) 'Authorization': 'Token $token',
       };
 
+  Uri _u(String path) => Uri.parse('$baseUrl$path');
+
   Future<Map<String, dynamic>> login(String username, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/auth/login/'),
+      _u('/auth/login/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'username': username, 'password': password}),
     );
@@ -44,22 +45,30 @@ class ApiService {
     return data;
   }
 
-  Future<List<VisitRecord>> fetchVisits() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/visits/'),
-      headers: headers,
-    );
+  // ── generic helpers ────────────────────────────────────────────────────────
+  Future<dynamic> _get(String path) async {
+    final response = await http.get(_u(path), headers: headers);
     _ensureOk(response);
-    final data = jsonDecode(response.body);
-    final results = data is List ? data : data['results'] as List;
-    return results
+    return jsonDecode(response.body);
+  }
+
+  List<dynamic> _asList(dynamic data) {
+    if (data is List) return data;
+    if (data is Map && data['results'] is List) return data['results'] as List;
+    return const [];
+  }
+
+  // ── visits ────────────────────────────────────────────────────────────────
+  Future<List<VisitRecord>> fetchVisits() async {
+    final data = await _get('/visits/?all=1');
+    return _asList(data)
         .map((e) => VisitRecord.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
   Future<VisitRecord> createVisit(VisitRecord visit) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/visits/'),
+      _u('/visits/'),
       headers: headers,
       body: jsonEncode(visit.toJson()),
     );
@@ -69,49 +78,99 @@ class ApiService {
     );
   }
 
+  // ── localities / wilayas ─────────────────────────────────────────────────
   Future<List<Locality>> fetchLocalities({String? wilaya}) async {
-    final uri = wilaya == null
-        ? Uri.parse('$baseUrl/localities/')
-        : Uri.parse('$baseUrl/localities/?wilaya=${Uri.encodeComponent(wilaya)}');
-    final response = await http.get(uri, headers: headers);
-    _ensureOk(response);
-    final data = jsonDecode(response.body);
-    final results = data is List ? data : data['results'] as List? ?? [];
-    return results
+    final path = wilaya == null
+        ? '/localities/'
+        : '/localities/?wilaya=${Uri.encodeComponent(wilaya)}';
+    final data = await _get(path);
+    return _asList(data)
         .map((e) => Locality.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
   Future<List<String>> fetchWilayas() async {
-    final localities = await fetchLocalities();
-    return localities.map((l) => l.nomWilaya).toSet().toList()..sort();
+    final data = await _get('/wilayas/');
+    return (data as List).map((e) => e.toString()).toList()..sort();
   }
 
-  Future<AdminKpis> fetchAdminKpis() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/admin/kpis/'),
-      headers: headers,
+  // ── doctors / pharmacies / products ──────────────────────────────────────
+  Future<List<Doctor>> fetchDoctors() async {
+    final data = await _get('/doctors/?all=1');
+    return _asList(data)
+        .map((e) => Doctor.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<DoctorHistory> fetchDoctorHistory(int id) async {
+    final data = await _get('/doctors/$id/history/');
+    return DoctorHistory.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<List<Pharmacy>> fetchPharmacies() async {
+    final data = await _get('/pharmacies/?all=1');
+    return _asList(data)
+        .map((e) => Pharmacy.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<Product>> fetchProducts() async {
+    final data = await _get('/products/');
+    return _asList(data)
+        .map((e) => Product.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  // ── dashboards / analytics ──────────────────────────────────────────────
+  Future<ManagerDashboard> fetchManagerDashboard() async {
+    final data = await _get('/dashboard/manager/');
+    return ManagerDashboard.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<DelegateStats> fetchDelegateStats({int? repId}) async {
+    final data = await _get(
+      repId == null ? '/dashboard/delegate/' : '/dashboard/delegate/?rep=$repId',
     );
-    _ensureOk(response);
-    return AdminKpis.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return DelegateStats.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<List<LeaderboardRow>> fetchLeaderboard() async {
+    final data = await _get('/dashboard/leaderboard/') as Map<String, dynamic>;
+    return (data['ranking'] as List)
+        .map((e) => LeaderboardRow.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<VisitAlert>> fetchAlerts() async {
+    final data = await _get('/alerts/') as Map<String, dynamic>;
+    return (data['alerts'] as List)
+        .map((e) => VisitAlert.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<WilayaAggregate>> fetchMapAggregate() async {
+    final data = await _get('/analytics/map/') as Map<String, dynamic>;
+    return (data['by_wilaya'] as List)
+        .map((e) => WilayaAggregate.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  // ── admin ───────────────────────────────────────────────────────────────
+  Future<AdminKpis> fetchAdminKpis() async {
+    final data = await _get('/admin/kpis/');
+    return AdminKpis.fromJson(data as Map<String, dynamic>);
   }
 
   Future<List<AppUser>> fetchRepresentatives() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/representatives/'),
-      headers: headers,
-    );
-    _ensureOk(response);
-    final data = jsonDecode(response.body);
-    final results = data is List ? data : data['results'] as List;
-    return results
+    final data = await _get('/representatives/');
+    return _asList(data)
         .map((e) => AppUser.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
   Future<AppUser> createRepresentative(Map<String, dynamic> payload) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/representatives/'),
+      _u('/representatives/'),
       headers: headers,
       body: jsonEncode(payload),
     );
@@ -119,9 +178,10 @@ class ApiService {
     return AppUser.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
   }
 
-  Future<AppUser> updateRepresentative(int id, Map<String, dynamic> payload) async {
+  Future<AppUser> updateRepresentative(
+      int id, Map<String, dynamic> payload) async {
     final response = await http.patch(
-      Uri.parse('$baseUrl/representatives/$id/'),
+      _u('/representatives/$id/'),
       headers: headers,
       body: jsonEncode(payload),
     );
@@ -131,7 +191,7 @@ class ApiService {
 
   Future<void> resetRepresentativePassword(int id, String newPassword) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/representatives/$id/reset_password/'),
+      _u('/representatives/$id/reset_password/'),
       headers: headers,
       body: jsonEncode({'password': newPassword}),
     );
@@ -140,32 +200,28 @@ class ApiService {
 
   Future<void> deleteRepresentative(int id) async {
     final response = await http.delete(
-      Uri.parse('$baseUrl/representatives/$id/'),
+      _u('/representatives/$id/'),
       headers: headers,
     );
     _ensureOk(response, expected: 204);
   }
 
-  Future<File> downloadReport(String format) async {
+  // ── exports ─────────────────────────────────────────────────────────────
+  Future<String> downloadReport(String format) async {
     final ext = format == 'xlsx' ? 'xlsx' : format;
-    final response = await http.get(
-      Uri.parse('$baseUrl/exports/$format/'),
-      headers: headers,
-    );
+    final response = await http.get(_u('/exports/$format/'), headers: headers);
     if (response.statusCode == 200) {
-      final dir = await getApplicationDocumentsDirectory();
-      final file = File(
-        '${dir.path}/visimed_report_${DateTime.now().millisecondsSinceEpoch}.$ext',
-      );
-      await file.writeAsBytes(response.bodyBytes);
-      return file;
+      return saveReport(response.bodyBytes, 'visimed_report.$ext');
     }
+    _ensureOk(response);
     throw Exception('Export pipeline failed to communicate with backend.');
   }
 
   void _ensureOk(http.Response response, {int expected = 200}) {
     if (response.statusCode == 401) {
-      if (onUnauthorized != null) onUnauthorized!();
+      // A 401 with no token in hand is not a session expiry (e.g. demo mode
+      // hitting a protected endpoint) — don't force a logout.
+      if (token != null && onUnauthorized != null) onUnauthorized!();
       throw UnauthorizedException('Session expired. Please log in again.');
     }
     if (response.statusCode != expected) {

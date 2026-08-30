@@ -61,5 +61,13 @@
     "tapBelowToLog": "Tap the button below to log your first visit",
     "selectADay": "Select a day",
 
+    "team": "Team",
+    "doctors": "Doctors",
+    "alerts": "Alerts",
+    "performance": "Perf.",
+    "roleManager": "Manager",
+    "doctorFile": "Doctor file",
+    "visitHistory": "Visit history",
+
     "language": "Language"
 }

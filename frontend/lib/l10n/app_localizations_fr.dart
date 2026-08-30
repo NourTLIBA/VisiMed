@@ -178,5 +178,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selectADay => 'Sélectionnez un jour';
 
   @override
+  String get team => 'Équipe';
+
+  @override
+  String get doctors => 'Médecins';
+
+  @override
+  String get alerts => 'Alertes';
+
+  @override
+  String get performance => 'Perf';
+
+  @override
+  String get roleManager => 'Manager';
+
+  @override
+  String get doctorFile => 'Fiche médecin';
+
+  @override
+  String get visitHistory => 'Historique des visites';
+
+  @override
   String get language => 'Langue';
 }

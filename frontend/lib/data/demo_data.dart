@@ -251,6 +251,42 @@ final kDemoVisits = <VisitRecord>[
   ),
 ];
 
+// ── Doctors / Products (demo) ──────────────────────────────────────────────
+
+final kDemoProducts = [
+  Product(id: 1, name: 'GlucoReader X1', category: 'Lecteur'),
+  Product(id: 2, name: 'Bandelettes T-50', category: 'Consommable'),
+  Product(id: 3, name: 'Insuline RapidAct', category: 'Traitement'),
+  Product(id: 4, name: 'Kit Éducation Patient', category: 'Support'),
+];
+
+final kDemoDoctors = () {
+  final med = kDemoVisits.where((v) => v.visitType == VisitType.medical).toList();
+  final seen = <String>{};
+  var id = 1;
+  final out = <Doctor>[];
+  for (final v in med) {
+    if (!seen.add(v.targetName)) continue;
+    out.add(Doctor(
+      id: id++,
+      name: v.targetName,
+      gender: v.gender ?? '',
+      specialty: v.specialty,
+      structureType: v.structureType,
+      potential: v.potential,
+      gcoStatus: v.gcoStatus,
+      address: v.address,
+      wilaya: v.wilaya,
+      commune: v.commune,
+      telephone: v.telephone,
+      email: v.email,
+      visitCount: med.where((x) => x.targetName == v.targetName).length,
+      lastVisitDate: v.date,
+    ));
+  }
+  return out;
+}();
+
 // ── Admin KPIs ─────────────────────────────────────────────────────────────
 
 final kDemoKpis = AdminKpis(

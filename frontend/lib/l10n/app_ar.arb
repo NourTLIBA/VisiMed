@@ -61,5 +61,13 @@
     "tapBelowToLog": "اضغط على الزر أدناه لتسجيل زيارتك الأولى",
     "selectADay": "حدد يومًا",
 
+    "team": "الفريق",
+    "doctors": "الأطباء",
+    "alerts": "التنبيهات",
+    "performance": "الأداء",
+    "roleManager": "مدير فريق",
+    "doctorFile": "ملف الطبيب",
+    "visitHistory": "سجل الزيارات",
+
     "language": "اللغة"
 }

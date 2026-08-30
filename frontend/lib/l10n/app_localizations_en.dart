@@ -177,5 +177,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectADay => 'Select a day';
 
   @override
+  String get team => 'Team';
+
+  @override
+  String get doctors => 'Doctors';
+
+  @override
+  String get alerts => 'Alerts';
+
+  @override
+  String get performance => 'Perf.';
+
+  @override
+  String get roleManager => 'Manager';
+
+  @override
+  String get doctorFile => 'Doctor file';
+
+  @override
+  String get visitHistory => 'Visit history';
+
+  @override
   String get language => 'Language';
 }

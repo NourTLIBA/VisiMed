@@ -436,6 +436,48 @@ abstract class AppLocalizations {
   /// **'Sélectionnez un jour'**
   String get selectADay;
 
+  /// No description provided for @team.
+  ///
+  /// In fr, this message translates to:
+  /// **'Équipe'**
+  String get team;
+
+  /// No description provided for @doctors.
+  ///
+  /// In fr, this message translates to:
+  /// **'Médecins'**
+  String get doctors;
+
+  /// No description provided for @alerts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes'**
+  String get alerts;
+
+  /// No description provided for @performance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Perf'**
+  String get performance;
+
+  /// No description provided for @roleManager.
+  ///
+  /// In fr, this message translates to:
+  /// **'Manager'**
+  String get roleManager;
+
+  /// No description provided for @doctorFile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche médecin'**
+  String get doctorFile;
+
+  /// No description provided for @visitHistory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique des visites'**
+  String get visitHistory;
+
   /// No description provided for @language.
   ///
   /// In fr, this message translates to:

@@ -7,9 +7,13 @@ import '../state/app_state.dart';
 import '../theme/app_theme.dart';
 import '../widgets/language_selector.dart';
 import 'admin_screen.dart';
+import 'alerts_screen.dart';
 import 'calendar_screen.dart';
+import 'doctors_screen.dart';
 import 'login_screen.dart';
+import 'manager_dashboard_screen.dart';
 import 'map_screen.dart';
+import 'team_screen.dart';
 import 'visit_form_screen.dart';
 import 'visits_screen.dart';
 
@@ -32,36 +36,50 @@ class _HomeShellState extends State<HomeShell> {
       builder: (context, user, _) {
         if (user == null) return const SizedBox.shrink();
 
-        final tabs = <Widget>[
-          VisitsScreen(state: widget.state),
-          CalendarScreen(state: widget.state),
-          MapScreen(state: widget.state),
-          if (user.isAdmin) AdminScreen(state: widget.state),
-        ];
+        final l = AppLocalizations.of(context)!;
+        final tabs = <Widget>[];
+        final destinations = <NavigationDestination>[];
 
-        final destinations = <NavigationDestination>[
-          NavigationDestination(
-            icon: const Icon(Icons.list_alt_outlined),
-            selectedIcon: const Icon(Icons.list_alt),
-            label: AppLocalizations.of(context)!.visits,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.calendar_month_outlined),
-            selectedIcon: const Icon(Icons.calendar_month),
-            label: AppLocalizations.of(context)!.calendar,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.map_outlined),
-            selectedIcon: const Icon(Icons.map),
-            label: AppLocalizations.of(context)!.map,
-          ),
-          if (user.isAdmin)
-            NavigationDestination(
-              icon: const Icon(Icons.admin_panel_settings_outlined),
-              selectedIcon: const Icon(Icons.admin_panel_settings),
-              label: AppLocalizations.of(context)!.roleAdmin,
-            ),
-        ];
+        void tab(Widget screen, IconData icon, IconData selected, String label) {
+          tabs.add(screen);
+          destinations.add(NavigationDestination(
+            icon: Icon(icon),
+            selectedIcon: Icon(selected),
+            label: label,
+          ));
+        }
+
+        final mapScreen = MapScreen(state: widget.state);
+        final doctorsScreen = DoctorsScreen(state: widget.state);
+
+        if (user.isStaff) {
+          tab(ManagerDashboardScreen(state: widget.state),
+              Icons.dashboard_outlined, Icons.dashboard, l.dashboard);
+          if (user.isAdmin) {
+            tab(AdminScreen(state: widget.state),
+                Icons.admin_panel_settings_outlined,
+                Icons.admin_panel_settings, l.roleAdmin);
+          } else {
+            tab(LeaderboardScreen(state: widget.state),
+                Icons.emoji_events_outlined, Icons.emoji_events, l.team);
+          }
+          tab(doctorsScreen, Icons.folder_shared_outlined,
+              Icons.folder_shared, l.doctors);
+          tab(mapScreen, Icons.map_outlined, Icons.map, l.map);
+          tab(AlertsScreen(state: widget.state),
+              Icons.notifications_active_outlined,
+              Icons.notifications_active, l.alerts);
+        } else {
+          tab(VisitsScreen(state: widget.state), Icons.list_alt_outlined,
+              Icons.list_alt, l.visits);
+          tab(CalendarScreen(state: widget.state),
+              Icons.calendar_month_outlined, Icons.calendar_month, l.calendar);
+          tab(doctorsScreen, Icons.folder_shared_outlined,
+              Icons.folder_shared, l.doctors);
+          tab(mapScreen, Icons.map_outlined, Icons.map, l.map);
+          tab(DelegatePerfScreen(state: widget.state),
+              Icons.insights_outlined, Icons.insights, l.performance);
+        }
 
         if (_index >= tabs.length) _index = 0;
 
@@ -199,7 +217,7 @@ class _HomeShellState extends State<HomeShell> {
               destinations: destinations,
             ),
           ),
-          floatingActionButton: _index == 0 && !user.isAdmin
+          floatingActionButton: _index == 0 && !user.isStaff
               ? Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),

@@ -12,7 +12,21 @@ SECRET_KEY = os.environ.get(
     "django-insecure-dev-only-change-in-production",
 )
 
-DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
+DEBUG = os.environ.get("DJANGO_DEBUG", "false").lower() == "true"
+
+import sys
+
+_SERVING = any(cmd in sys.argv for cmd in ("runserver", "gunicorn")) or (
+    "config.wsgi" in " ".join(sys.argv)
+)
+if _SERVING and not DEBUG and SECRET_KEY.startswith("django-insecure-"):
+    import warnings
+
+    warnings.warn(
+        "Serving with DEBUG=false but DJANGO_SECRET_KEY is unset — set it in the "
+        "environment before serving real traffic.",
+        RuntimeWarning,
+    )
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
@@ -95,7 +109,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICSFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
@@ -109,7 +123,16 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 100,
 }
 
-CORS_ALLOW_ALL_ORIGINS = True  # open for testing/tunneling
+# Allow-all by default keeps existing tunnel/dev workflows working; set
+# CORS_ALLOW_ALL=false + CORS_ALLOWED_ORIGINS=... in production.
+CORS_ALLOW_ALL_ORIGINS = (
+    os.environ.get("CORS_ALLOW_ALL", "true").lower() == "true"
+)
+CORS_ALLOWED_ORIGINS = [
+    o.strip()
+    for o in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
+    if o.strip()
+]
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",

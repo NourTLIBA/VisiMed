@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../data/demo_data.dart';
@@ -18,6 +20,9 @@ class AppState {
   final ValueNotifier<List<String>> wilayas = ValueNotifier([]);
   final ValueNotifier<AdminKpis?> kpis = ValueNotifier(null);
   final ValueNotifier<List<AppUser>> representatives = ValueNotifier([]);
+  final ValueNotifier<List<Doctor>> doctors = ValueNotifier([]);
+  final ValueNotifier<List<Pharmacy>> pharmacies = ValueNotifier([]);
+  final ValueNotifier<List<Product>> products = ValueNotifier([]);
   final ValueNotifier<bool> loading = ValueNotifier(false);
   final ValueNotifier<String?> error = ValueNotifier(null);
 
@@ -58,7 +63,9 @@ class AppState {
     visits.value = List.of(kDemoVisits);
     wilayas.value = List.of(kDemoWilayas);
     localities.value = List.of(kDemoLocalities);
-    if (demoUser.isAdmin) {
+    doctors.value = List.of(kDemoDoctors);
+    products.value = List.of(kDemoProducts);
+    if (demoUser.isStaff) {
       kpis.value = kDemoKpis;
       representatives.value = List.of(kDemoRepresentatives);
     }
@@ -73,6 +80,9 @@ class AppState {
     wilayas.value = [];
     kpis.value = null;
     representatives.value = [];
+    doctors.value = [];
+    pharmacies.value = [];
+    products.value = [];
     potentialFilter.value = null;
     typeFilter.value = null;
     error.value = null;
@@ -85,7 +95,10 @@ class AppState {
       visits.value = await api.fetchVisits();
       wilayas.value = await api.fetchWilayas();
       localities.value = await api.fetchLocalities();
-      if (user.value?.isAdmin ?? false) {
+      products.value = await api.fetchProducts();
+      doctors.value = await api.fetchDoctors();
+      pharmacies.value = await api.fetchPharmacies();
+      if (user.value?.isStaff ?? false) {
         kpis.value = await api.fetchAdminKpis();
         representatives.value = await api.fetchRepresentatives();
       }
@@ -96,12 +109,17 @@ class AppState {
     }
   }
 
+  Future<void> reloadDoctors() async {
+    try {
+      doctors.value = await api.fetchDoctors();
+    } catch (_) {/* keep stale list */}
+  }
+
   Future<void> addVisit(VisitRecord visit) async {
     final created = await api.createVisit(visit);
     visits.value = [created, ...visits.value];
-    if (user.value?.isAdmin ?? false) {
-      kpis.value = await api.fetchAdminKpis();
-    }
+    // Refresh the target lists so a newly-created doctor/pharmacy shows up.
+    unawaited(reloadDoctors());
   }
 
   Future<void> loadCommunesForWilaya(String wilaya) async {

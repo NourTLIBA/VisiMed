@@ -5,7 +5,7 @@ from visimed.models import User, UserRole
 
 
 class Command(BaseCommand):
-    help = "Create default admin and sample representative accounts"
+    help = "Create default admin, manager and sample representative accounts"
 
     def handle(self, *args, **options):
         admin, created = User.objects.get_or_create(
@@ -24,6 +24,7 @@ class Command(BaseCommand):
             self.stdout.write("Admin already exists")
 
         samples = [
+            ("manager1", UserRole.MANAGER, "", "manager123"),
             ("medrep1", UserRole.MED_REP, "Alger,Blida", "med123"),
             ("pharmrep1", UserRole.PHARMA_REP, "Oran,Mostaganem", "pharma123"),
         ]

@@ -5,6 +5,7 @@ import '../l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
+import 'visit_detail_screen.dart';
 
 class VisitsScreen extends StatelessWidget {
   const VisitsScreen({super.key, required this.state});
@@ -80,7 +81,12 @@ class VisitsScreen extends StatelessWidget {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () {}, // placeholder for detail view
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          VisitDetailScreen(state: state, visit: v),
+                    ),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),

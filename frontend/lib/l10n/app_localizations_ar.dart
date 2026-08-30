@@ -177,5 +177,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectADay => 'حدد يومًا';
 
   @override
+  String get team => 'الفريق';
+
+  @override
+  String get doctors => 'الأطباء';
+
+  @override
+  String get alerts => 'التنبيهات';
+
+  @override
+  String get performance => 'الأداء';
+
+  @override
+  String get roleManager => 'مدير فريق';
+
+  @override
+  String get doctorFile => 'ملف الطبيب';
+
+  @override
+  String get visitHistory => 'سجل الزيارات';
+
+  @override
   String get language => 'اللغة';
 }
