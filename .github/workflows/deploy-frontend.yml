@@ -19,7 +19,11 @@ jobs:
 
       - name: Build Flutter Web
         working-directory: frontend
-        run: flutter build web --release
+        env:
+          VISIMED_API_URL: ${{ secrets.VISIMED_API_URL }}
+        run: |
+          flutter build web --release \
+            --dart-define=VISIMED_API_URL="${VISIMED_API_URL:-https://visimed-api.onrender.com/api}"
 
       - name: Deploy to Netlify
         uses: netlify/actions/cli@master

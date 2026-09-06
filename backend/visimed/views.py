@@ -126,6 +126,17 @@ class LogoutView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class HealthView(APIView):
+    """Unauthenticated liveness probe for the platform health check."""
+
+    authentication_classes: list = []
+    permission_classes = [permissions.AllowAny]
+    throttle_classes: list = []
+
+    def get(self, request):
+        return Response({"status": "ok"})
+
+
 class RepresentativeCRUDViewSet(viewsets.ModelViewSet):
     queryset = User.objects.exclude(role=UserRole.ADMIN).order_by("username")
     serializer_class = UserSerializer

@@ -15,7 +15,7 @@ class ApiService {
       : baseUrl = baseUrl ??
             const String.fromEnvironment(
               'VISIMED_API_URL',
-              defaultValue: 'https://visimed-production.up.railway.app/api',
+              defaultValue: 'https://visimed-api.onrender.com/api',
             );
 
   final String baseUrl;
