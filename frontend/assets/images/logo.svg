@@ -1,0 +1,13 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>VisiMed</title>
+  <!--
+    VisiMed monogram — a wide rounded "V" with a point dropped into its cradle:
+    "V" for VisiMed, and a located visit. Pine green #2F5D50 on transparent;
+    the app wraps it in its own white tile.
+  -->
+  <g stroke="#2F5D50" stroke-width="29" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M76 74 L128 162" />
+    <path d="M180 74 L128 162" />
+  </g>
+  <circle cx="128" cy="200" r="16" fill="#2F5D50" />
+</svg>
