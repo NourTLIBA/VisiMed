@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 import '../state/app_state.dart';
+import '../state/filters.dart';
 import '../theme/app_theme.dart';
 import '../theme/deco.dart';
+import '../widgets/filter_bar.dart';
 import 'doctor_detail_screen.dart';
 
 /// Directory of tracked doctors — the entry point to each doctor's file.
@@ -17,22 +19,32 @@ class DoctorsScreen extends StatefulWidget {
 
 class _DoctorsScreenState extends State<DoctorsScreen> {
   String _query = '';
-  String? _wilaya;
+
+  bool _matchesFilter(Doctor d, VisitFilter f) {
+    if (f.wilaya != null &&
+        d.wilaya.toLowerCase() != f.wilaya!.toLowerCase()) {
+      return false;
+    }
+    if (f.potentials.isNotEmpty && !f.potentials.contains(d.potential)) {
+      return false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<Doctor>>(
-      valueListenable: widget.state.doctors,
-      builder: (context, doctors, _) {
-        final wilayas = {for (final d in doctors) d.wilaya}
-          ..removeWhere((w) => w.isEmpty);
+    return ListenableBuilder(
+      listenable:
+          Listenable.merge([widget.state.doctors, widget.state.visitFilter]),
+      builder: (context, _) {
+        final doctors = widget.state.doctors.value;
+        final f = widget.state.visitFilter.value;
+        final q = _query.toLowerCase();
         final list = doctors.where((d) {
-          final q = _query.toLowerCase();
           final matchQ = q.isEmpty ||
               d.name.toLowerCase().contains(q) ||
               d.specialty.toLowerCase().contains(q);
-          final matchW = _wilaya == null || d.wilaya == _wilaya;
-          return matchQ && matchW;
+          return matchQ && _matchesFilter(d, f);
         }).toList()
           ..sort((a, b) => a.name.compareTo(b.name));
 
@@ -40,38 +52,17 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
-              child: Column(
-                children: [
-                  TextField(
-                    onChanged: (v) => setState(() => _query = v),
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      hintText: 'Rechercher un médecin…',
-                      prefixIcon: Icon(Icons.search_rounded, size: 20),
-                    ),
-                  ),
-                  if (wilayas.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: 34,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          _FilterPill(
-                              label: 'Toutes',
-                              selected: _wilaya == null,
-                              onTap: () => setState(() => _wilaya = null)),
-                          ...wilayas.map((w) => _FilterPill(
-                              label: w,
-                              selected: _wilaya == w,
-                              onTap: () => setState(() => _wilaya = w))),
-                        ],
-                      ),
-                    ),
-                  ],
-                ],
+              child: TextField(
+                onChanged: (v) => setState(() => _query = v),
+                decoration: const InputDecoration(
+                  isDense: true,
+                  hintText: 'Rechercher un médecin…',
+                  prefixIcon: Icon(Icons.search_rounded, size: 20),
+                ),
               ),
             ),
+            FilterBar(state: widget.state),
+            const Divider(height: 1),
             Expanded(
               child: list.isEmpty
                   ? const DecoEmpty(
@@ -92,42 +83,6 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
           ],
         );
       },
-    );
-  }
-}
-
-class _FilterPill extends StatelessWidget {
-  const _FilterPill(
-      {required this.label, required this.selected, required this.onTap});
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: Material(
-        color: selected ? AppTheme.primary : AppTheme.primary.withAlpha(16),
-        borderRadius: BorderRadius.circular(AppTheme.rPill),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Center(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w600,
-                  color: selected ? Colors.white : AppTheme.primary,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -134,6 +134,21 @@ class ApiService {
     return DelegateStats.fromJson(data as Map<String, dynamic>);
   }
 
+  Future<DelegateAnalytics> fetchDelegateAnalytics({
+    int? repId,
+    Map<String, String> query = const {},
+  }) async {
+    final params = <String, String>{
+      ...query,
+      if (repId != null) 'rep': '$repId',
+    };
+    final qs = params.isEmpty
+        ? ''
+        : '?${params.entries.map((e) => '${e.key}=${Uri.encodeQueryComponent(e.value)}').join('&')}';
+    final data = await _get('/dashboard/delegate/analytics/$qs');
+    return DelegateAnalytics.fromJson(data as Map<String, dynamic>);
+  }
+
   Future<List<LeaderboardRow>> fetchLeaderboard() async {
     final data = await _get('/dashboard/leaderboard/') as Map<String, dynamic>;
     return (data['ranking'] as List)

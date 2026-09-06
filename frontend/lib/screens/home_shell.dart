@@ -12,6 +12,7 @@ import 'doctors_screen.dart';
 import 'login_screen.dart';
 import 'manager_dashboard_screen.dart';
 import 'map_screen.dart';
+import 'stats_screen.dart';
 import 'team_screen.dart';
 import 'visit_form_screen.dart';
 import 'visits_screen.dart';
@@ -82,8 +83,8 @@ class _HomeShellState extends State<HomeShell> {
           tab(doctorsScreen, Icons.folder_shared_outlined, Icons.folder_shared,
               l.doctors);
           tab(mapScreen, Icons.map_outlined, Icons.map, l.map);
-          tab(DelegatePerfScreen(state: widget.state), Icons.insights_outlined,
-              Icons.insights, l.performance);
+          tab(StatsScreen(state: widget.state, embedded: true),
+              Icons.insights_outlined, Icons.insights, l.performance);
         }
 
         if (_index >= tabs.length) _index = 0;

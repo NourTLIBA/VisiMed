@@ -725,3 +725,100 @@ class WilayaAggregate {
             : null,
       );
 }
+
+/// Filter-aware breakdown of one rep's visit history — powers StatsScreen.
+class AnalyticsWeekPoint {
+  AnalyticsWeekPoint({required this.week, required this.count});
+  final DateTime week;
+  final int count;
+}
+
+class WilayaCount {
+  WilayaCount({required this.wilaya, required this.count});
+  final String wilaya;
+  final int count;
+}
+
+class DelegateAnalytics {
+  DelegateAnalytics({
+    required this.username,
+    required this.rangeFrom,
+    required this.rangeTo,
+    required this.visits,
+    required this.doctors,
+    required this.pharmacies,
+    required this.orders,
+    required this.avgDuration,
+    required this.materialsTotal,
+    required this.byType,
+    required this.byPotential,
+    required this.materials,
+    required this.byWeek,
+    required this.topWilayas,
+  });
+
+  final String username;
+  final DateTime? rangeFrom;
+  final DateTime? rangeTo;
+  final int visits;
+  final int doctors;
+  final int pharmacies;
+  final int orders;
+  final double avgDuration;
+  final int materialsTotal;
+
+  /// medical / pharmaceutical → count
+  final Map<String, int> byType;
+
+  /// KOL / A / B / C → count
+  final Map<String, int> byPotential;
+
+  /// vials / meters / reader / brochure_m / brochure_patient / affiche → count
+  final Map<String, int> materials;
+
+  final List<AnalyticsWeekPoint> byWeek;
+  final List<WilayaCount> topWilayas;
+
+  bool get isEmpty => visits == 0;
+
+  static Map<String, int> _intMap(dynamic v) {
+    final out = <String, int>{};
+    if (v is Map) {
+      v.forEach((k, val) => out[k.toString()] = _asInt(val));
+    }
+    return out;
+  }
+
+  factory DelegateAnalytics.fromJson(Map<String, dynamic> json) {
+    final range = (json['range'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final totals = (json['totals'] as Map?)?.cast<String, dynamic>() ?? const {};
+    return DelegateAnalytics(
+      username: (json['rep'] as Map?)?['username']?.toString() ?? '',
+      rangeFrom: DateTime.tryParse(range['from']?.toString() ?? ''),
+      rangeTo: DateTime.tryParse(range['to']?.toString() ?? ''),
+      visits: _asInt(totals['visits']),
+      doctors: _asInt(totals['doctors']),
+      pharmacies: _asInt(totals['pharmacies']),
+      orders: _asInt(totals['orders']),
+      avgDuration: _asDouble(totals['avg_duration']),
+      materialsTotal: _asInt(totals['materials']),
+      byType: _intMap(json['by_type']),
+      byPotential: _intMap(json['by_potential']),
+      materials: _intMap(json['materials']),
+      byWeek: ((json['by_week'] as List?) ?? const [])
+          .map((e) => AnalyticsWeekPoint(
+                week: DateTime.tryParse(
+                        (e as Map)['week']?.toString() ?? '') ??
+                    DateTime.now(),
+                count: _asInt(e['count']),
+              ))
+          .toList(),
+      topWilayas: ((json['top_wilayas'] as List?) ?? const [])
+          .map((e) => WilayaCount(
+                wilaya: (e as Map)['wilaya']?.toString() ?? '—',
+                count: _asInt(e['count']),
+              ))
+          .toList(),
+    );
+  }
+}

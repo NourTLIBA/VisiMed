@@ -4,6 +4,7 @@ import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
 import '../theme/deco.dart';
+import 'stats_screen.dart';
 
 /// Automatic delegate ranking (see inconsistencies.md §3.4). Composite score
 /// over: visits, objective attainment, sector coverage, orders generated.
@@ -164,61 +165,6 @@ class _RankBadge extends StatelessWidget {
   }
 }
 
-/// Per-delegate synthetic view — visits of the day, objectives met, coverage.
-class DelegatePerfScreen extends StatefulWidget {
-  const DelegatePerfScreen({super.key, required this.state});
-  final AppState state;
-
-  @override
-  State<DelegatePerfScreen> createState() => _DelegatePerfScreenState();
-}
-
-class _DelegatePerfScreenState extends State<DelegatePerfScreen> {
-  late Future<DelegateStats> _future;
-
-  @override
-  void initState() {
-    super.initState();
-    _future = widget.state.api.fetchDelegateStats();
-  }
-
-  Future<void> _refresh() async {
-    setState(() => _future = widget.state.api.fetchDelegateStats());
-    await _future;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      color: AppTheme.primary,
-      onRefresh: _refresh,
-      child: FutureBuilder<DelegateStats>(
-        future: _future,
-        builder: (context, snap) {
-          if (snap.connectionState != ConnectionState.done) {
-            return const Center(
-                child: CircularProgressIndicator(color: AppTheme.primary));
-          }
-          if (snap.hasError) {
-            return ListView(children: [
-              const SizedBox(height: 90),
-              Center(child: Text('${snap.error}')),
-            ]);
-          }
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-            children: [
-              DecoSectionTitle('Ma performance — ${snap.data!.username}',
-                  icon: Icons.insights_outlined),
-              DelegateStatsBody(stats: snap.data!),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
 class _DelegateSheet extends StatefulWidget {
   const _DelegateSheet({required this.state, required this.username});
   final AppState state;
@@ -231,18 +177,18 @@ class _DelegateSheet extends StatefulWidget {
 class _DelegateSheetState extends State<_DelegateSheet> {
   DelegateStats? _stats;
   Object? _error;
+  int? _repId;
 
   @override
   void initState() {
     super.initState();
-    AppUser? rep;
     for (final r in widget.state.representatives.value) {
       if (r.username == widget.username) {
-        rep = r;
+        _repId = r.id;
         break;
       }
     }
-    widget.state.api.fetchDelegateStats(repId: rep?.id).then((s) {
+    widget.state.api.fetchDelegateStats(repId: _repId).then((s) {
       if (mounted) setState(() => _stats = s);
     }).catchError((e) {
       if (mounted) setState(() => _error = e);
@@ -283,12 +229,31 @@ class _DelegateSheetState extends State<_DelegateSheet> {
               padding: EdgeInsets.all(30),
               child: CircularProgressIndicator(color: AppTheme.primary),
             )
-          else
+          else ...[
             Flexible(
               child: SingleChildScrollView(
                 child: DelegateStatsBody(stats: _stats!),
               ),
             ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => StatsScreen(
+                      state: widget.state,
+                      repId: _repId,
+                      title: 'Statistiques — ${widget.username}',
+                    ),
+                  ));
+                },
+                icon: const Icon(Icons.insights_outlined, size: 18),
+                label: const Text('Statistiques détaillées'),
+              ),
+            ),
+          ],
         ],
       ),
     );

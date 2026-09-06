@@ -34,7 +34,7 @@ flutter run -d chrome    # manual check
 |---|---|---|
 | Entry | `lib/main.dart` | `MaterialApp`, `AppTheme.light()`, locale from `AppState`. |
 | State | `lib/state/app_state.dart` | **`ValueNotifier` only** — no Provider/Riverpod/Bloc. Screens use `ValueListenableBuilder` / `ListenableBuilder`. Keep it that way. |
-| API | `lib/services/api_service.dart` | Plain `http`. Token in memory. `report_download*.dart` is the conditional-import web/io split for exports. |
+| API | `lib/services/api_service.dart` | Plain `http`. Token in memory. Base URL: `--dart-define=VISIMED_API_URL=…`, default `https://visimed-api.onrender.com/api` (backend moved Railway→Render — see `../backend/DEPLOY.md`). `report_download*.dart` is the conditional-import web/io split for exports. |
 | Models | `lib/models/models.dart` | Enums `UserRole {admin, manager, medRep, pharmaRep}`, `VisitType {medical, pharmaceutical}`, `TargetPotential {KOL, A, B, C}`. `AppUser` has `isStaff / isAdmin / isManager / isMedRep / isPharmaRep / defaultVisitType`. |
 | l10n | `lib/l10n/app_*.arb` → generated `app_localizations*.dart` | fr (template) / en / ar. `flutter gen-l10n` regenerates. Strings are **partly** localised — many screen labels are still hard-coded French. If you add UI copy, prefer adding an ARB key, but matching the file you're in (hard-coded FR) is acceptable for now. |
 | Navigation | imperative `Navigator.push(MaterialPageRoute(...))` | no router package. |
@@ -43,14 +43,34 @@ flutter run -d chrome    # manual check
 
 `login_screen` → `home_shell` (role-aware `NavigationBar`):
 
-- **rep** (medRep / pharmaRep): Visites · Agenda · Médecins · Carte · Perf.
-  FAB "Nouvelle visite" on tab 0 → `visit_form_screen`.
+- **rep** (medRep / pharmaRep): Visites · Agenda · Médecins · Carte · **Perf
+  (`stats_screen.dart`, `embedded: true`)**. FAB "Nouvelle visite" on tab 0.
 - **manager**: Dashboard · Équipe (leaderboard) · Médecins · Carte · Alertes.
-- **admin**: Dashboard · Admin (`admin_screen`: KPIs + rep CRUD) · Médecins · Carte · Alertes.
+- **admin**: Dashboard · Admin (`admin_screen`) · Médecins · Carte · Alertes.
 
-Detail screens: `visit_detail_screen`, `doctor_detail_screen` (visit history),
-`manager_dashboard_screen`, `team_screen` (`LeaderboardScreen`,
-`DelegatePerfScreen`, `DelegateStatsBody`, `_DelegateSheet`).
+Detail screens: `visit_detail_screen`, `doctor_detail_screen`,
+`manager_dashboard_screen`, `stats_screen` (`StatsScreen` — pushed by
+`team_screen`'s leaderboard sheet with a `repId` for the manager view),
+`team_screen` (`LeaderboardScreen`, `DelegateStatsBody`, `_DelegateSheet`).
+
+### Shared visit filters (`state/filters.dart` + `widgets/filter_bar.dart`)
+
+`VisitFilter` (range / wilaya / type / potentials / query) lives on
+`AppState.visitFilter` (a `ValueNotifier`, reset on logout). `FilterBar` — preset
+chips (`FilterPreset`: Cette semaine / Ce mois / 90 j / Mes KOL) + a "Filtres"
+bottom sheet — reads and writes it. It's mounted on **Visites**, **Médecins**
+and **Statistiques**; the filter persists across those screens by design.
+
+- Client-side: `state.filteredVisits` applies `VisitFilter.matches` (on top of
+  the map's older `potentialFilter` / `typeFilter`). Médecins applies only the
+  `wilaya` + `potentials` facets (a doctor isn't a visit).
+- Server-side: `VisitFilter.toQuery()` → the backend's shared params
+  (`date_from` / `date_to` / `wilaya` / `visit_type` / `potential` / `q`),
+  consumed by `GET /visits/` and `GET /dashboard/delegate/analytics/`.
+
+`StatsScreen` (`fetchDelegateAnalytics`) re-fetches whenever `visitFilter`
+changes. Like the other analytics screens it needs the live backend — demo mode
+shows its error state.
 
 ---
 

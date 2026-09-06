@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../data/demo_data.dart';
 import '../models/models.dart';
 import '../services/api_service.dart';
+import 'filters.dart';
 
 /// Zero-overhead app state — ValueNotifier only, no third-party state libs.
 class AppState {
@@ -35,6 +36,10 @@ class AppState {
   // Map filter chips — local slicing, no server round-trip.
   final ValueNotifier<TargetPotential?> potentialFilter = ValueNotifier(null);
   final ValueNotifier<VisitType?> typeFilter = ValueNotifier(null);
+
+  // Shared visit filters (Visites list, Médecins list, Statistiques).
+  final ValueNotifier<VisitFilter> visitFilter =
+      ValueNotifier(const VisitFilter());
 
   Future<void> login(String username, String password) async {
     loading.value = true;
@@ -93,6 +98,7 @@ class AppState {
     products.value = [];
     potentialFilter.value = null;
     typeFilter.value = null;
+    visitFilter.value = const VisitFilter();
     error.value = null;
   }
 
@@ -146,6 +152,7 @@ class AppState {
   }
 
   List<VisitRecord> get filteredVisits {
+    final vf = visitFilter.value;
     return visits.value.where((v) {
       if (potentialFilter.value != null && v.potential != potentialFilter.value) {
         return false;
@@ -153,7 +160,7 @@ class AppState {
       if (typeFilter.value != null && v.visitType != typeFilter.value) {
         return false;
       }
-      return true;
+      return vf.matches(v);
     }).toList();
   }
 

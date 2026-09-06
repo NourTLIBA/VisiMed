@@ -5,6 +5,7 @@ import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
 import '../theme/deco.dart';
+import '../widgets/filter_bar.dart';
 import 'visit_detail_screen.dart';
 
 class VisitsScreen extends StatelessWidget {
@@ -15,26 +16,48 @@ class VisitsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    return ValueListenableBuilder<List<VisitRecord>>(
-      valueListenable: state.visits,
-      builder: (context, visits, _) {
-        if (visits.isEmpty) {
-          return DecoEmpty(
+    return ListenableBuilder(
+      listenable: Listenable.merge([state.visits, state.visitFilter]),
+      builder: (context, _) {
+        final all = state.visits.value;
+        final list = state.filteredVisits;
+
+        Widget content;
+        if (all.isEmpty) {
+          content = DecoEmpty(
             icon: Icons.event_note_outlined,
             title: l.noVisitsYet,
             message: l.tapBelowToLog,
           );
+        } else if (list.isEmpty) {
+          content = ListView(children: const [
+            SizedBox(height: 40),
+            DecoEmpty(
+              icon: Icons.filter_alt_off_outlined,
+              title: 'Aucun résultat',
+              message: 'Aucune visite ne correspond à ces filtres.',
+            ),
+          ]);
+        } else {
+          content = RefreshIndicator(
+            onRefresh: state.refreshAll,
+            child: ListView.separated(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 96),
+              itemCount: list.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              itemBuilder: (context, i) =>
+                  _VisitCard(state: state, visit: list[i]),
+            ),
+          );
         }
 
-        return RefreshIndicator(
-          onRefresh: state.refreshAll,
-          child: ListView.separated(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
-            itemCount: visits.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: (context, i) =>
-                _VisitCard(state: state, visit: visits[i]),
-          ),
+        return Column(
+          children: [
+            const SizedBox(height: 8),
+            FilterBar(state: state),
+            const Divider(height: 1),
+            Expanded(child: content),
+          ],
         );
       },
     );
