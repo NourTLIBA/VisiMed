@@ -6,6 +6,7 @@ import '../l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
+import '../theme/deco.dart';
 
 class VisitFormScreen extends StatefulWidget {
   const VisitFormScreen({
@@ -94,22 +95,17 @@ class _VisitFormScreenState extends State<VisitFormScreen> {
   // ── helpers ──────────────────────────────────────────────────────────────
   Widget _sectionLabel(String text, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20, bottom: 8),
+      padding: const EdgeInsets.fromLTRB(2, 22, 2, 10),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: AppTheme.gold.withAlpha(30),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: AppTheme.gold.withAlpha(100), width: 1),
-            ),
-            child: Icon(icon, size: 16, color: AppTheme.primary),
-          ),
-          const SizedBox(width: 10),
+          Icon(icon, size: 17, color: AppTheme.primary),
+          const SizedBox(width: 8),
           Text(
-            text.toUpperCase(),
-            style: AppTheme.sectionHeader,
+            text,
+            style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.ink),
           ),
         ],
       ),
@@ -118,19 +114,11 @@ class _VisitFormScreenState extends State<VisitFormScreen> {
 
   Widget _card({required List<Widget> children}) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE5E0D5), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(6),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          )
-        ],
+        borderRadius: BorderRadius.circular(AppTheme.rCard),
+        boxShadow: AppTheme.softShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -144,52 +132,26 @@ class _VisitFormScreenState extends State<VisitFormScreen> {
   // ── build ─────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final Color headerColor = AppTheme.gold;
-    final String roleLabel = _isMedical ? 'Medical' : _isPharma ? 'Pharma' : 'Admin';
+    final String roleLabel =
+        _isMedical ? 'Médical' : _isPharma ? 'Pharmaceutique' : 'Admin';
 
     return Scaffold(
       backgroundColor: AppTheme.surface,
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset('assets/images/logo.png', height: 26, width: 26, errorBuilder: (_, __, ___) => const Icon(Icons.bookmark_border)),
-            const SizedBox(width: 10),
-            const Text('Log Visit'),
-          ],
-        ),
-        leading: const BackButton(),
+        title: Text(AppLocalizations.of(context)!.newVisit),
         actions: [
-          if (roleLabel.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.only(right: 14),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: headerColor.withAlpha(35),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: headerColor.withAlpha(140), width: 1),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    _isMedical
-                        ? Icons.medical_services_outlined
-                        : Icons.local_pharmacy_outlined,
-                    color: headerColor,
-                    size: 14,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    roleLabel,
-                    style: TextStyle(
-                      color: headerColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Center(
+              child: DecoChip(
+                roleLabel,
+                color: _isPharma ? AppTheme.accent : AppTheme.primary,
+                icon: _isPharma
+                    ? Icons.local_pharmacy_outlined
+                    : Icons.medical_services_outlined,
               ),
             ),
+          ),
         ],
       ),
       body: Form(
@@ -233,7 +195,7 @@ class _VisitFormScreenState extends State<VisitFormScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFE5E0D5), width: 1),
+                    border: Border.all(color: AppTheme.hairline, width: 1),
                   ),
                   child: Row(
                     children: [
@@ -245,7 +207,7 @@ class _VisitFormScreenState extends State<VisitFormScreen> {
                           Text('Visit Date',
                               style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.grey.shade600,
+                                  color: AppTheme.inkMuted,
                                   fontWeight: FontWeight.w500)),
                           const SizedBox(height: 2),
                           Text(
@@ -259,7 +221,7 @@ class _VisitFormScreenState extends State<VisitFormScreen> {
                         ],
                       ),
                       const Spacer(),
-                      Icon(Icons.chevron_right, color: Colors.grey.shade400),
+                      Icon(Icons.chevron_right, color: AppTheme.inkFaint),
                     ],
                   ),
                 ),
@@ -649,7 +611,7 @@ class _QuantityStepper extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE5E0D5), width: 1),
+        border: Border.all(color: AppTheme.hairline, width: 1),
       ),
       child: Row(
         children: [
@@ -676,7 +638,7 @@ class _QuantityStepper extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: AppTheme.gold.withAlpha(25),
+                color: AppTheme.primary.withAlpha(20),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.remove, size: 16, color: AppTheme.primary),
@@ -688,7 +650,7 @@ class _QuantityStepper extends StatelessWidget {
               controller: controller,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.primary),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.primary),
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.symmetric(vertical: 4),
                 isDense: true,

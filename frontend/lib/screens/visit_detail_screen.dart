@@ -22,11 +22,7 @@ class VisitDetailScreen extends StatelessWidget {
     final typeColor = AppTheme.visitTypeColor(v.visitType);
     return Scaffold(
       backgroundColor: AppTheme.surface,
-      appBar: AppBar(
-        backgroundColor: AppTheme.primaryDark,
-        title: const Text('VISITE',
-            style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.w900)),
-      ),
+      appBar: AppBar(title: const Text('Visite')),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
         children: [
@@ -46,8 +42,8 @@ class VisitDetailScreen extends StatelessWidget {
                       child: Text(v.targetName,
                           style: const TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                              color: AppTheme.primaryDark)),
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.ink)),
                     ),
                   ],
                 ),
@@ -71,14 +67,14 @@ class VisitDetailScreen extends StatelessWidget {
               child: Row(
                 children: [
                   const Icon(Icons.folder_shared_outlined,
-                      color: AppTheme.gold),
+                      color: AppTheme.inkFaint),
                   const SizedBox(width: 10),
                   const Expanded(
                       child: Text('Ouvrir la fiche médecin',
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
-                              color: AppTheme.primaryDark))),
-                  const Icon(Icons.chevron_right, color: AppTheme.gold),
+                              color: AppTheme.ink))),
+                  const Icon(Icons.chevron_right, color: AppTheme.inkFaint),
                 ],
               ),
             ),
@@ -167,12 +163,12 @@ class VisitDetailScreen extends StatelessWidget {
                 width: 130,
                 child: Text(k,
                     style: TextStyle(
-                        color: Colors.grey.shade600, fontSize: 12.5))),
+                        color: AppTheme.inkMuted, fontSize: 12.5))),
             Expanded(
                 child: Text(v.isEmpty ? '—' : v,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.primaryDark,
+                        color: AppTheme.ink,
                         fontSize: 13))),
           ],
         ),

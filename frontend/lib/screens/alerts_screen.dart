@@ -77,7 +77,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
                 child: Text('Aucune alerte — tout est à jour.',
                     style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.primaryDark)),
+                        color: AppTheme.ink)),
               ),
             ]);
           }
@@ -129,19 +129,19 @@ class _AlertsScreenState extends State<AlertsScreen> {
                             children: [
                               Text(a.title,
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      color: AppTheme.primaryDark)),
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.ink)),
                               const SizedBox(height: 3),
                               Text(a.detail,
                                   style: TextStyle(
                                       fontSize: 12,
-                                      color: Colors.grey.shade600)),
+                                      color: AppTheme.inkMuted)),
                             ],
                           ),
                         ),
                         if (tappable)
                           const Icon(Icons.chevron_right,
-                              color: AppTheme.gold),
+                              color: AppTheme.inkFaint),
                       ],
                     ),
                   ),

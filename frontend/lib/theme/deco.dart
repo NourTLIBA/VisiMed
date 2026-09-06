@@ -5,55 +5,56 @@ import 'package:flutter/material.dart';
 import 'app_theme.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
-///  VisiMed Art-Deco design system
+///  VisiMed shared UI kit
 ///
-///  A small kit of geometric, symmetric, gold-lined building blocks so every
-///  screen reads as one deliberate system instead of ad-hoc per-screen
-///  painters (see inconsistencies.md §6.6).
+///  A small set of soft, quiet building blocks so every screen reads as one
+///  system: white panels on warm ivory, a single diffuse shadow, no outlines,
+///  full-pill chips, sentence-case section headers. Class names are kept stable
+///  so screens need no structural change to adopt the refreshed look.
 /// ─────────────────────────────────────────────────────────────────────────────
 
 class Deco {
-  static const double radius = 14;
+  static const double radius = AppTheme.rCard;
 
+  /// Gentle brand gradient — used only behind the login hero.
   static const LinearGradient forest = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF0B1C18), AppTheme.primary, Color(0xFF1A3D30)],
-    stops: [0.0, 0.55, 1.0],
+    colors: [AppTheme.primary, AppTheme.primaryDark],
   );
 
+  /// Soft white surface: rounded, one diffuse shadow, no border.
   static BoxDecoration panel({Color? color, double? radius}) => BoxDecoration(
         color: color ?? AppTheme.cardBg,
         borderRadius: BorderRadius.circular(radius ?? Deco.radius),
-        border: Border.all(color: AppTheme.gold.withAlpha(90), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.primaryDark.withAlpha(18),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: AppTheme.softShadow,
+      );
+
+  /// Flat tinted surface (no shadow) — for inset rows / steppers.
+  static BoxDecoration soft({Color? color, double? radius}) => BoxDecoration(
+        color: color ?? AppTheme.surface,
+        borderRadius: BorderRadius.circular(radius ?? AppTheme.rTile),
       );
 
   static Color potentialColor(String p) {
     switch (p.toUpperCase()) {
       case 'KOL':
-        return AppTheme.vermillion;
+        return AppTheme.danger;
       case 'A':
         return AppTheme.gold;
       case 'B':
         return AppTheme.jade;
       default:
-        return const Color(0xFF7C8B84);
+        return AppTheme.inkFaint;
     }
   }
 
   static Color severityColor(String s) {
     switch (s) {
       case 'high':
-        return AppTheme.vermillion;
+        return AppTheme.danger;
       case 'medium':
-        return AppTheme.gold;
+        return AppTheme.warning;
       default:
         return AppTheme.jade;
     }
@@ -66,70 +67,14 @@ class Deco {
       case 'delivered':
         return AppTheme.primary;
       case 'cancelled':
-        return AppTheme.vermillion;
+        return AppTheme.danger;
       default:
-        return AppTheme.gold;
+        return AppTheme.warning;
     }
   }
 }
 
-/// Full-bleed dark Art-Deco backdrop with corner sunbursts.
-class DecoBackground extends StatelessWidget {
-  const DecoBackground({super.key, required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(gradient: Deco.forest),
-      child: Stack(
-        children: [
-          Positioned.fill(child: CustomPaint(painter: _SunburstPainter())),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-class _SunburstPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final ray = Paint()
-      ..color = AppTheme.gold.withAlpha(12)
-      ..strokeWidth = 0.7;
-    for (final origin in [Offset.zero, Offset(size.width, size.height)]) {
-      final sign = origin == Offset.zero ? 1 : -1;
-      for (int i = 0; i <= 9; i++) {
-        final a = (math.pi * 0.5 / 9) * i;
-        canvas.drawLine(
-          origin,
-          Offset(origin.dx + sign * math.cos(a) * size.width * 0.7,
-              origin.dy + sign * math.sin(a) * size.height * 0.7),
-          ray,
-        );
-      }
-    }
-    final arc = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.8
-      ..color = AppTheme.gold.withAlpha(16);
-    for (int i = 1; i <= 4; i++) {
-      canvas.drawArc(
-        Rect.fromCircle(center: Offset(size.width, 0), radius: i * 70.0),
-        math.pi * 0.5,
-        math.pi * 0.5,
-        false,
-        arc,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-/// Section header: gold tick + spaced caps + trailing gradient rule.
+/// Section header: quiet label with an optional leading glyph and trailing slot.
 class DecoSectionTitle extends StatelessWidget {
   const DecoSectionTitle(this.text, {super.key, this.icon, this.trailing});
   final String text;
@@ -139,54 +84,36 @@ class DecoSectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 18, 4, 10),
+      padding: const EdgeInsets.fromLTRB(4, 22, 4, 10),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: AppTheme.gold.withAlpha(28),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: AppTheme.gold.withAlpha(110)),
-            ),
-            child: Icon(icon ?? Icons.diamond_outlined,
-                size: 14, color: AppTheme.primary),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            text.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 1.6,
-              color: AppTheme.primaryDark,
-            ),
-          ),
-          const SizedBox(width: 12),
+          if (icon != null) ...[
+            Icon(icon, size: 17, color: AppTheme.primary),
+            const SizedBox(width: 8),
+          ],
           Expanded(
-            child: Container(
-              height: 1,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  AppTheme.gold.withAlpha(150),
-                  Colors.transparent,
-                ]),
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.ink,
               ),
             ),
           ),
-          if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+          if (trailing != null) trailing!,
         ],
       ),
     );
   }
 }
 
-/// Card with a thin gold frame and optional inner-corner ticks.
+/// Soft white card.
 class DecoCard extends StatelessWidget {
   const DecoCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(18),
     this.onTap,
   });
   final Widget child;
@@ -197,59 +124,16 @@ class DecoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final body = Container(
       decoration: Deco.panel(),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: IgnorePointer(
-              child: CustomPaint(painter: _CornerTicksPainter()),
-            ),
-          ),
-          Padding(padding: padding, child: child),
-        ],
-      ),
+      child: Padding(padding: padding, child: child),
     );
     if (onTap == null) return body;
-    return InkWell(
+    return Material(
+      color: Colors.transparent,
       borderRadius: BorderRadius.circular(Deco.radius),
-      onTap: onTap,
-      child: body,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(onTap: onTap, child: body),
     );
   }
-}
-
-class _CornerTicksPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final p = Paint()
-      ..color = AppTheme.gold.withAlpha(120)
-      ..strokeWidth = 1.2;
-    const m = 8.0, l = 9.0;
-    // four corners
-    for (final c in [
-      [const Offset(m, m), const Offset(m + l, m), const Offset(m, m + l)],
-      [
-        Offset(size.width - m, m),
-        Offset(size.width - m - l, m),
-        Offset(size.width - m, m + l)
-      ],
-      [
-        Offset(m, size.height - m),
-        Offset(m + l, size.height - m),
-        Offset(m, size.height - m - l)
-      ],
-      [
-        Offset(size.width - m, size.height - m),
-        Offset(size.width - m - l, size.height - m),
-        Offset(size.width - m, size.height - m - l)
-      ],
-    ]) {
-      canvas.drawLine(c[0], c[1], p);
-      canvas.drawLine(c[0], c[2], p);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 /// Compact KPI tile.
@@ -275,7 +159,7 @@ class DecoStat extends StatelessWidget {
     final c = color ?? AppTheme.primary;
     return Container(
       width: width,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+      padding: const EdgeInsets.all(16),
       decoration: Deco.panel(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,23 +169,23 @@ class DecoStat extends StatelessWidget {
             children: [
               if (icon != null) ...[
                 Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(7),
                   decoration: BoxDecoration(
-                    color: c.withAlpha(22),
-                    borderRadius: BorderRadius.circular(8),
+                    color: c.withAlpha(28),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(icon, size: 15, color: c),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 9),
               ],
               Expanded(
                 child: Text(
-                  label.toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    letterSpacing: 0.8,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.grey.shade600,
+                  label,
+                  style: const TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w500,
+                    color: AppTheme.inkMuted,
+                    height: 1.25,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -309,20 +193,20 @@ class DecoStat extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Text(
             value,
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
+              fontSize: 23,
+              fontWeight: FontWeight.w700,
               color: c,
               height: 1,
             ),
           ),
           if (sub != null) ...[
-            const SizedBox(height: 3),
+            const SizedBox(height: 4),
             Text(sub!,
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+                style: const TextStyle(fontSize: 11.5, color: AppTheme.inkFaint)),
           ],
         ],
       ),
@@ -330,14 +214,14 @@ class DecoStat extends StatelessWidget {
   }
 }
 
-/// Circular gauge (0..1) with a spoked Art-Deco rim.
+/// Circular progress gauge (0..1) — clean ring, no ornament.
 class DecoGauge extends StatelessWidget {
   const DecoGauge({
     super.key,
     required this.value,
     required this.label,
     this.centerText,
-    this.color = AppTheme.gold,
+    this.color = AppTheme.primary,
     this.size = 120,
   });
   final double value;
@@ -361,23 +245,23 @@ class DecoGauge extends StatelessWidget {
               child: Text(
                 centerText ?? '${(v * 100).round()}%',
                 style: TextStyle(
-                  fontSize: size * 0.22,
-                  fontWeight: FontWeight.w900,
-                  color: AppTheme.primaryDark,
+                  fontSize: size * 0.24,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.ink,
                 ),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Text(
-          label.toUpperCase(),
+          label,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 10,
-            letterSpacing: 1,
-            fontWeight: FontWeight.w700,
-            color: Colors.grey.shade600,
+          style: const TextStyle(
+            fontSize: 11.5,
+            fontWeight: FontWeight.w500,
+            color: AppTheme.inkMuted,
+            height: 1.3,
           ),
         ),
       ],
@@ -393,35 +277,22 @@ class _GaugePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
-    final r = size.width / 2 - 8;
+    final r = size.width / 2 - 6;
     final track = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 9
+      ..strokeWidth = 8
       ..strokeCap = StrokeCap.round
       ..color = AppTheme.primary.withAlpha(20);
     final prog = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 9
+      ..strokeWidth = 8
       ..strokeCap = StrokeCap.round
       ..color = color;
     const start = -math.pi / 2;
-    canvas.drawArc(Rect.fromCircle(center: center, radius: r), start,
-        math.pi * 2, false, track);
+    canvas.drawArc(
+        Rect.fromCircle(center: center, radius: r), start, math.pi * 2, false, track);
     canvas.drawArc(Rect.fromCircle(center: center, radius: r), start,
         math.pi * 2 * value, false, prog);
-
-    final tick = Paint()
-      ..color = AppTheme.gold.withAlpha(120)
-      ..strokeWidth = 1.4;
-    for (int i = 0; i < 24; i++) {
-      final a = (math.pi * 2 / 24) * i;
-      final r1 = r + 7, r2 = r + (i % 6 == 0 ? 2 : 4);
-      canvas.drawLine(
-        Offset(center.dx + math.cos(a) * r1, center.dy + math.sin(a) * r1),
-        Offset(center.dx + math.cos(a) * r2, center.dy + math.sin(a) * r2),
-        tick,
-      );
-    }
   }
 
   @override
@@ -429,7 +300,7 @@ class _GaugePainter extends CustomPainter {
       old.value != value || old.color != color;
 }
 
-/// Labelled progress row with a framed bar.
+/// Labelled progress row with a rounded track.
 class DecoBarRow extends StatelessWidget {
   const DecoBarRow({
     super.key,
@@ -449,43 +320,46 @@ class DecoBarRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final pct = total > 0 ? (value / total).clamp(0.0, 1.0).toDouble() : 0.0;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Container(width: 8, height: 8, color: color),
-              const SizedBox(width: 9),
               Expanded(
                 child: Text(label,
                     style: const TextStyle(
                         fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.primaryDark)),
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.ink)),
               ),
               Text(
                 valueLabel ?? '$value',
                 style: TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w800, color: color),
+                    fontSize: 13, fontWeight: FontWeight.w700, color: color),
               ),
-              const SizedBox(width: 4),
-              Text('(${(pct * 100).round()}%)',
-                  style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+              const SizedBox(width: 6),
+              Text('${(pct * 100).round()}%',
+                  style: const TextStyle(fontSize: 11.5, color: AppTheme.inkFaint)),
             ],
           ),
-          const SizedBox(height: 6),
-          Container(
-            height: 8,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              border: Border.all(color: AppTheme.gold.withAlpha(70)),
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: FractionallySizedBox(
-                widthFactor: pct == 0 ? 0.001 : pct,
-                child: Container(color: color),
+          const SizedBox(height: 7),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppTheme.rPill),
+            child: Container(
+              height: 8,
+              color: AppTheme.surfaceAlt,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FractionallySizedBox(
+                  widthFactor: pct == 0 ? 0.0001 : pct,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(AppTheme.rPill),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -495,30 +369,126 @@ class DecoBarRow extends StatelessWidget {
   }
 }
 
-/// Small framed pill.
+/// Full-pill tag.
 class DecoChip extends StatelessWidget {
   const DecoChip(this.label,
-      {super.key, this.color = AppTheme.primary, this.filled = false});
+      {super.key, this.color = AppTheme.primary, this.filled = false, this.icon});
   final String label;
   final Color color;
   final bool filled;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
+    final fg = filled ? Colors.white : color;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: icon != null ? 10 : 11, vertical: 5),
       decoration: BoxDecoration(
-        color: filled ? color : color.withAlpha(18),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withAlpha(filled ? 255 : 90)),
+        color: filled ? color : color.withAlpha(20),
+        borderRadius: BorderRadius.circular(AppTheme.rPill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 12, color: fg),
+            const SizedBox(width: 5),
+          ],
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: fg,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Round monogram avatar (initials) — used across directories & lists.
+class DecoAvatar extends StatelessWidget {
+  const DecoAvatar(this.text, {super.key, this.color = AppTheme.primary, this.size = 44});
+  final String text;
+  final Color color;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final initials = text.trim().isEmpty
+        ? '?'
+        : text
+            .trim()
+            .split(RegExp(r'\s+'))
+            .take(2)
+            .map((w) => w[0])
+            .join()
+            .toUpperCase();
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: color.withAlpha(28),
+        shape: BoxShape.circle,
       ),
       child: Text(
-        label,
+        initials,
         style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.5,
-          color: filled ? Colors.white : color,
+          fontWeight: FontWeight.w700,
+          color: color,
+          fontSize: size * 0.34,
+        ),
+      ),
+    );
+  }
+}
+
+/// Simple centred empty / placeholder state.
+class DecoEmpty extends StatelessWidget {
+  const DecoEmpty({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.message,
+  });
+  final IconData icon;
+  final String title;
+  final String? message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 76,
+              height: 76,
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withAlpha(18),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 34, color: AppTheme.primary),
+            ),
+            const SizedBox(height: 18),
+            Text(title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.ink)),
+            if (message != null) ...[
+              const SizedBox(height: 6),
+              Text(message!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 13, color: AppTheme.inkFaint)),
+            ],
+          ],
         ),
       ),
     );

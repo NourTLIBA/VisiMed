@@ -42,32 +42,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
               },
               onPageChanged: (focused) => _focused = focused,
               eventLoader: widget.state.visitsOnDay,
-              calendarStyle: const CalendarStyle(
-                markerDecoration: BoxDecoration(
-                  color: AppTheme.gold,
+              calendarStyle: CalendarStyle(
+                markerDecoration: const BoxDecoration(
+                  color: AppTheme.accent,
                   shape: BoxShape.circle,
                 ),
                 todayDecoration: BoxDecoration(
+                  color: AppTheme.primary.withAlpha(28),
+                  shape: BoxShape.circle,
+                ),
+                todayTextStyle: const TextStyle(
+                    color: AppTheme.primary, fontWeight: FontWeight.w700),
+                selectedDecoration: const BoxDecoration(
                   color: AppTheme.primary,
                   shape: BoxShape.circle,
                 ),
-                selectedDecoration: BoxDecoration(
-                  color: AppTheme.jade,
-                  shape: BoxShape.circle,
-                ),
-                weekendTextStyle: TextStyle(color: AppTheme.vermillion),
+                weekendTextStyle: const TextStyle(color: AppTheme.inkFaint),
+                outsideTextStyle: const TextStyle(color: AppTheme.inkFaint),
+                defaultTextStyle: const TextStyle(color: AppTheme.ink),
               ),
               headerStyle: const HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
+                headerPadding: EdgeInsets.symmetric(vertical: 12),
                 titleTextStyle: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                  color: AppTheme.primaryDark,
-                  letterSpacing: 1.5,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.ink,
                 ),
-                leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.gold),
-                rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.gold),
+                leftChevronIcon:
+                    Icon(Icons.chevron_left_rounded, color: AppTheme.inkMuted),
+                rightChevronIcon:
+                    Icon(Icons.chevron_right_rounded, color: AppTheme.inkMuted),
               ),
               calendarBuilders: CalendarBuilders(
                 markerBuilder: (context, day, events) {
@@ -82,7 +88,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         decoration: BoxDecoration(
                           color: AppTheme.visitTypeColor(v.visitType),
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppTheme.gold.withAlpha(150), width: 0.5),
                         ),
                       );
                     }).toList(),
@@ -95,47 +100,30 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   );
                   if (!hasKOL) return null;
                   return Container(
-                    margin: const EdgeInsets.all(4),
+                    margin: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      border: Border.all(color: AppTheme.gold, width: 1.5),
-                      borderRadius: BorderRadius.circular(8),
-                      color: AppTheme.ricePaper,
+                      border: Border.all(color: AppTheme.danger, width: 1.4),
+                      shape: BoxShape.circle,
                     ),
                     alignment: Alignment.center,
                     child: Text(
                       '${day.day}',
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.primaryDark,
+                        color: AppTheme.danger,
                       ),
                     ),
                   );
                 },
               ),
             ),
-            const SizedBox(height: 8),
-            Container(
-              height: 2,
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.transparent,
-                    AppTheme.gold.withAlpha(150),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
+            const Divider(height: 1),
             Expanded(
               child: _selected == null
                   ? Center(
                       child: Text(
                         AppLocalizations.of(context)!.selectADay,
-                        style: TextStyle(
-                          color: AppTheme.primaryDark.withAlpha(120),
-                          fontStyle: FontStyle.italic,
-                        ),
+                        style: const TextStyle(color: AppTheme.inkFaint),
                       ),
                     )
                   : _DayVisitList(
@@ -179,44 +167,44 @@ class _DayVisitList extends StatelessWidget {
       itemBuilder: (context, index) {
         final v = items[index];
         final isMed = v.visitType == VisitType.medical;
+        final tc = AppTheme.visitTypeColor(v.visitType);
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppTheme.gold.withAlpha(100), width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.primaryDark.withAlpha(15),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              )
-            ],
+            borderRadius: BorderRadius.circular(AppTheme.rTile),
+            boxShadow: AppTheme.softShadow,
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.rTile)),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             leading: Container(
-              padding: const EdgeInsets.all(8),
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
-                color: AppTheme.visitTypeColor(v.visitType).withAlpha(20),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                    color: AppTheme.visitTypeColor(v.visitType).withAlpha(50)),
+                color: tc.withAlpha(28),
+                shape: BoxShape.circle,
               ),
               child: Icon(
-                isMed ? Icons.medical_services : Icons.local_pharmacy,
-                color: AppTheme.visitTypeColor(v.visitType),
+                isMed
+                    ? Icons.medical_services_outlined
+                    : Icons.local_pharmacy_outlined,
+                color: tc,
+                size: 20,
               ),
             ),
             title: Text(
               v.targetName,
               style: const TextStyle(
-                  fontWeight: FontWeight.w700, color: AppTheme.primaryDark),
+                  fontWeight: FontWeight.w600, color: AppTheme.ink),
             ),
             subtitle: Text(
               '${v.potential.name} · ${v.structureType}',
-              style: TextStyle(color: AppTheme.primaryDark.withAlpha(160)),
+              style: const TextStyle(color: AppTheme.inkMuted, fontSize: 12.5),
             ),
-            trailing: const Icon(Icons.chevron_right, color: AppTheme.gold),
+            trailing:
+                const Icon(Icons.chevron_right_rounded, color: AppTheme.inkFaint),
           ),
         );
       },

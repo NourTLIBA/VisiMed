@@ -56,22 +56,21 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Widget _seg(String label, bool sel, VoidCallback onTap) => Expanded(
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 9),
-            decoration: BoxDecoration(
-              color: sel ? AppTheme.primary : Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.gold.withAlpha(sel ? 255 : 90)),
+        child: Material(
+          color: sel ? AppTheme.primary : AppTheme.primary.withAlpha(16),
+          borderRadius: BorderRadius.circular(AppTheme.rPill),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(label,
+                  style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                      color: sel ? Colors.white : AppTheme.primary)),
             ),
-            child: Text(label.toUpperCase(),
-                style: TextStyle(
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.w800,
-                    color: sel ? Colors.white : AppTheme.primary)),
           ),
         ),
       );
@@ -147,14 +146,15 @@ class _MapScreenState extends State<MapScreen> {
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: good.withAlpha(150),
+                  color: good.withAlpha(210),
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppTheme.gold, width: 1.5),
+                  border: Border.all(color: Colors.white, width: 2),
+                  boxShadow: AppTheme.softShadow,
                 ),
                 child: Text('${w.count}',
                     style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: size * 0.32)),
               ),
             ),
@@ -192,7 +192,7 @@ class _MapScreenState extends State<MapScreen> {
                         'Cercle vert = secteur bien couvert · rouge = à renforcer. '
                         'Touchez une wilaya pour le détail.',
                         style: TextStyle(
-                            fontSize: 11, color: Colors.grey.shade700),
+                            fontSize: 11, color: AppTheme.inkMuted),
                       ),
                     ),
                   ],
@@ -224,16 +224,15 @@ class _MapScreenState extends State<MapScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                      color: AppTheme.gold,
+                      color: AppTheme.hairline,
                       borderRadius: BorderRadius.circular(2))),
             ),
-            const SizedBox(height: 14),
-            Text(w.wilaya.toUpperCase(),
+            const SizedBox(height: 16),
+            Text(w.wilaya,
                 style: const TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.5,
-                    color: AppTheme.primaryDark)),
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.ink)),
             const SizedBox(height: 14),
             Wrap(
               spacing: 10,

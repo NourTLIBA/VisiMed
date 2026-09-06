@@ -51,7 +51,7 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
                   padding: const EdgeInsets.all(24),
                   child: Text('Indicateurs indisponibles.\n${snap.error}',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey.shade600)),
+                      style: TextStyle(color: AppTheme.inkMuted)),
                 ),
               ),
             ]);
@@ -174,13 +174,13 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
                         Text('${d.ordersMonth}',
                             style: const TextStyle(
                                 fontSize: 34,
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w700,
                                 color: AppTheme.primary)),
                         const SizedBox(width: 8),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 6),
                           child: Text('commandes ce mois',
-                              style: TextStyle(color: Colors.grey.shade600)),
+                              style: TextStyle(color: AppTheme.inkMuted)),
                         ),
                       ],
                     ),
@@ -208,8 +208,8 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text('${d.promoMaterialTotal} unités ce mois',
                           style: const TextStyle(
-                              fontWeight: FontWeight.w800,
-                              color: AppTheme.primaryDark)),
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.ink)),
                     ),
                     const SizedBox(height: 6),
                     ...(() {
@@ -263,10 +263,10 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
             Expanded(
                 child: Text(k,
                     style: TextStyle(
-                        color: Colors.grey.shade700, fontSize: 13))),
+                        color: AppTheme.inkMuted, fontSize: 13))),
             Text(v,
                 style: const TextStyle(
-                    fontWeight: FontWeight.w800, color: AppTheme.primaryDark)),
+                    fontWeight: FontWeight.w700, color: AppTheme.ink)),
           ],
         ),
       );
