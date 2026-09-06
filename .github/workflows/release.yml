@@ -3,7 +3,9 @@ name: Release build (APK + web)
 # Produces downloadable builds people can try:
 #   • a universal Android APK  (debug-signed — fine for side-loading)
 #   • a zipped Flutter-web bundle
-# and attaches them to a GitHub Release.
+# and attaches them to a GitHub Release. The web bundle always ships; if the APK
+# step fails the release is still created with the web zip and the gradle error
+# is written to the run summary.
 #
 # Trigger: push a tag like `v1.0.0`, or run manually (Actions → Release build →
 # Run workflow) — the manual run makes a pre-release tagged `manual-<run>`.
@@ -47,7 +49,7 @@ jobs:
 
       - run: flutter pub get
 
-      - name: Resolve API URL
+      - name: Resolve config
         id: cfg
         run: |
           URL="${{ github.event.inputs.api_url }}"
@@ -56,19 +58,40 @@ jobs:
           echo "api_url=$URL" >> "$GITHUB_OUTPUT"
           echo "version=$(grep -m1 '^version:' pubspec.yaml | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
-      - name: Build APK
-        run: |
-          flutter build apk --release \
-            --dart-define=VISIMED_API_URL="${{ steps.cfg.outputs.api_url }}"
-          mkdir -p ../dist
-          cp build/app/outputs/flutter-apk/app-release.apk \
-             "../dist/visimed-${{ steps.cfg.outputs.version }}.apk"
-
       - name: Build web
         run: |
           flutter build web --release \
             --dart-define=VISIMED_API_URL="${{ steps.cfg.outputs.api_url }}"
+          mkdir -p ../dist
           (cd build/web && zip -qr "../../../dist/visimed-web-${{ steps.cfg.outputs.version }}.zip" .)
+
+      - name: Build APK
+        id: apk
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter build apk --release --verbose \
+            --dart-define=VISIMED_API_URL="${{ steps.cfg.outputs.api_url }}" \
+            2>&1 | tee ../dist/apk-build.log
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             "../dist/visimed-${{ steps.cfg.outputs.version }}.apk"
+
+      - name: Report APK failure
+        if: steps.apk.outcome == 'failure'
+        run: |
+          {
+            echo "### ❌ APK build failed"
+            echo '```'
+            grep -iE 'FAILURE:|What went wrong|> Task .*FAILED|Caused by|Exception|error:|Could not|not found|NDK|license' ../dist/apk-build.log | tail -60 || tail -80 ../dist/apk-build.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload APK build log
+        if: steps.apk.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-build-log
+          path: dist/apk-build.log
 
       - name: Tag for manual runs
         if: github.event_name == 'workflow_dispatch'
@@ -79,7 +102,7 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_TAG || github.ref_name }}
           prerelease: ${{ github.event_name == 'workflow_dispatch' }}
-          fail_on_unmatched_files: true
+          fail_on_unmatched_files: false
           generate_release_notes: true
           files: |
             dist/visimed-*.apk
@@ -87,12 +110,13 @@ jobs:
           body: |
             Downloadable builds of VisiMed.
 
-            - **Android**: download the `.apk`, then allow install from unknown
-              sources on your device. It is debug-signed, so Play Protect may
-              show a warning — that is expected for a side-loaded build.
-            - **Web**: the live app is the easiest way to try it —
-              https://visimed.netlify.app (add to home screen for a PWA). The
-              zip is the same bundle for self-hosting.
+            - **Web** (works on any device): the live app is the easiest way to
+              try it — your Netlify site (add to home screen for a PWA). The zip
+              here is the same bundle for self-hosting.
+            - **Android**: if `visimed-<version>.apk` is attached below, download
+              it, then allow install from unknown sources on your device. It is
+              debug-signed, so Play Protect may warn — expected for a side-load.
+              If it's missing, the APK build failed — see the run summary.
 
-            API: `${{ steps.cfg.outputs.api_url }}`
+            API baked in: `${{ steps.cfg.outputs.api_url }}`
             Demo logins: `medrep1` / `med123` · `pharmrep1` / `pharma123` · `admin` / `admin123`
