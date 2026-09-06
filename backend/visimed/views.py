@@ -38,6 +38,7 @@ from .models import (
     VisitType,
     normalize_name,
 )
+from .filters import apply_visit_filters, parse_range
 from .permissions import IsAdmin, IsManagerOrAdmin
 from .serializers import (
     DoctorSerializer,
@@ -172,9 +173,10 @@ class VisitRecordViewSet(viewsets.ModelViewSet):
     pagination_class = OptionalPagination
 
     def get_queryset(self):
-        return visible_visits(self.request.user).prefetch_related(
+        qs = visible_visits(self.request.user).prefetch_related(
             "presented_products__product", "prescriptions__product"
         )
+        return apply_visit_filters(qs, self.request.query_params)
 
     def perform_create(self, serializer):
         product_ids = serializer.validated_data.pop("product_ids", [])
@@ -456,8 +458,18 @@ class ManagerDashboardView(APIView):
         today = _today()
         month0 = _month_start(today)
         visits = visible_visits(request.user)
-        month_visits = visits.filter(date__gte=month0)
         reps = managed_reps(request.user)
+
+        # Optional scoping: ?wilaya=<name>  ?rep=<id>
+        wilaya = request.query_params.get("wilaya")
+        if wilaya:
+            visits = visits.filter(wilaya__iexact=wilaya)
+        rep_id = request.query_params.get("rep")
+        if rep_id:
+            visits = visits.filter(rep_id=rep_id)
+            reps = reps.filter(pk=rep_id)
+
+        month_visits = visits.filter(date__gte=month0)
 
         total_doctors = Doctor.objects.count()
         total_pharmacies = Pharmacy.objects.count()
@@ -595,17 +607,127 @@ def _rep_stats(rep, viewer):
     }
 
 
+def _resolve_target_rep(request):
+    """The rep whose data is being asked for. Reps may only see themselves;
+    staff may pass ?rep=<id>. Returns (rep, error_response|None)."""
+    rep = request.user
+    rep_id = request.query_params.get("rep")
+    if rep_id and request.user.is_staff_role:
+        try:
+            rep = User.objects.get(pk=rep_id)
+        except (User.DoesNotExist, ValueError):
+            return None, Response({"detail": "Unknown rep."}, status=404)
+    elif rep_id and str(request.user.id) != str(rep_id):
+        return None, Response({"detail": "Forbidden"}, status=403)
+    return rep, None
+
+
 class DelegateStatsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        rep = request.user
-        rep_id = request.query_params.get("rep")
-        if rep_id and request.user.is_staff_role:
-            rep = User.objects.get(pk=rep_id)
-        elif rep_id and str(request.user.id) != str(rep_id):
-            return Response({"detail": "Forbidden"}, status=403)
+        rep, err = _resolve_target_rep(request)
+        if err:
+            return err
         return Response(_rep_stats(rep, request.user))
+
+
+class DelegateAnalyticsView(APIView):
+    """Filter-aware breakdown of one rep's own visit history — powers the
+    "Statistiques" screen. Recognises the shared visit filter params
+    (date_from/date_to/wilaya/visit_type/potential/q); date range defaults to
+    the last 90 days."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    _MATERIAL_FIELDS = [
+        "qty_vials",
+        "qty_meters",
+        "qty_reader",
+        "qty_brochure_m",
+        "qty_brochure_patient",
+        "qty_affiche",
+    ]
+
+    def get(self, request):
+        rep, err = _resolve_target_rep(request)
+        if err:
+            return err
+
+        p = request.query_params
+        date_from, date_to = parse_range(p, default_days=90)
+        visits = apply_visit_filters(
+            VisitRecord.objects.filter(rep=rep), p
+        ).filter(date__gte=date_from, date__lte=date_to)
+
+        rows = list(
+            visits.values(
+                "date", "visit_type", "potential", "wilaya", "duration_minutes",
+                "doctor_id", "pharmacy_id", *self._MATERIAL_FIELDS,
+            )
+        )
+
+        by_type = {"medical": 0, "pharmaceutical": 0}
+        by_potential = {k: 0 for k in ("KOL", "A", "B", "C")}
+        materials = {f.replace("qty_", ""): 0 for f in self._MATERIAL_FIELDS}
+        wilaya_counts: dict[str, int] = {}
+        week_counts: dict[datetime.date, int] = {}
+        doctors, pharmacies = set(), set()
+        duration_sum = 0
+
+        for r in rows:
+            by_type[r["visit_type"]] = by_type.get(r["visit_type"], 0) + 1
+            if r["potential"] in by_potential:
+                by_potential[r["potential"]] += 1
+            for f in self._MATERIAL_FIELDS:
+                materials[f.replace("qty_", "")] += r[f] or 0
+            if r["wilaya"]:
+                wilaya_counts[r["wilaya"]] = wilaya_counts.get(r["wilaya"], 0) + 1
+            wk = r["date"] - datetime.timedelta(days=r["date"].weekday())
+            week_counts[wk] = week_counts.get(wk, 0) + 1
+            if r["doctor_id"]:
+                doctors.add(r["doctor_id"])
+            if r["pharmacy_id"]:
+                pharmacies.add(r["pharmacy_id"])
+            duration_sum += r["duration_minutes"] or 0
+
+        # Dense weekly series: one bucket per ISO week from date_from to date_to.
+        series = []
+        cursor = date_from - datetime.timedelta(days=date_from.weekday())
+        last = date_to - datetime.timedelta(days=date_to.weekday())
+        while cursor <= last:
+            series.append({"week": cursor.isoformat(), "count": week_counts.get(cursor, 0)})
+            cursor += datetime.timedelta(days=7)
+
+        orders = Prescription.objects.filter(
+            rep=rep, created_at__date__gte=date_from, created_at__date__lte=date_to
+        ).count()
+
+        total = len(rows)
+        return Response(
+            {
+                "rep": {"id": rep.id, "username": rep.username, "role": rep.role},
+                "range": {"from": date_from.isoformat(), "to": date_to.isoformat()},
+                "totals": {
+                    "visits": total,
+                    "doctors": len(doctors),
+                    "pharmacies": len(pharmacies),
+                    "orders": orders,
+                    "avg_duration": round(duration_sum / total, 1) if total else 0.0,
+                    "materials": sum(materials.values()),
+                },
+                "by_type": by_type,
+                "by_potential": by_potential,
+                "materials": materials,
+                "by_week": series,
+                "top_wilayas": [
+                    {"wilaya": w, "count": c}
+                    for w, c in sorted(
+                        wilaya_counts.items(), key=lambda kv: kv[1], reverse=True
+                    )[:6]
+                ],
+            }
+        )
 
 
 class LeaderboardView(APIView):

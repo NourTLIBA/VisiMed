@@ -247,6 +247,92 @@ class AlertTests(BaseAPITest):
         self.assertIn("objective_missed", kinds)
 
 
+class VisitFilterTests(BaseAPITest):
+    def setUp(self):
+        super().setUp()
+        self.auth("medrep_test", "password123")
+        self.client.post(
+            "/api/visits/",
+            self._visit_payload(date="2026-08-01", target_name="Dr. A", potential="A"),
+            format="json",
+        )
+        self.client.post(
+            "/api/visits/",
+            self._visit_payload(date="2026-08-20", target_name="Dr. B", potential="KOL"),
+            format="json",
+        )
+
+    def test_date_range_filter(self):
+        res = self.client.get("/api/visits/?all=1&date_from=2026-08-10&date_to=2026-08-31")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual({v["target_name"] for v in res.data}, {"Dr. B"})
+
+    def test_potential_filter_csv(self):
+        res = self.client.get("/api/visits/?all=1&potential=A,KOL")
+        self.assertEqual(len(res.data), 2)
+        res = self.client.get("/api/visits/?all=1&potential=KOL")
+        self.assertEqual({v["target_name"] for v in res.data}, {"Dr. B"})
+
+    def test_q_and_wilaya_filter(self):
+        res = self.client.get("/api/visits/?all=1&q=dr. a&wilaya=Alger")
+        self.assertEqual({v["target_name"] for v in res.data}, {"Dr. A"})
+        res = self.client.get("/api/visits/?all=1&wilaya=Oran")
+        self.assertEqual(len(res.data), 0)
+
+
+class DelegateAnalyticsTests(BaseAPITest):
+    def _seed(self):
+        self.auth("medrep_test", "password123")
+        for i, pot in enumerate(["A", "KOL", "B"]):
+            self.client.post(
+                "/api/visits/",
+                self._visit_payload(
+                    date=f"2026-08-{10 + i * 3:02d}",
+                    target_name=f"Dr. {pot}{i}",
+                    potential=pot,
+                    qty_vials=2,
+                ),
+                format="json",
+            )
+
+    def test_analytics_shape_and_filters(self):
+        self._seed()
+        res = self.client.get(
+            "/api/dashboard/delegate/analytics/"
+            "?date_from=2026-08-01&date_to=2026-08-31"
+        )
+        self.assertEqual(res.status_code, 200, res.data)
+        d = res.data
+        self.assertEqual(d["totals"]["visits"], 3)
+        self.assertEqual(d["by_potential"]["KOL"], 1)
+        self.assertEqual(d["materials"]["vials"], 6)
+        self.assertTrue(any(w["count"] > 0 for w in d["by_week"]))
+        # Narrow the window (visits are on 08-10, 08-13, 08-16) → fewer visits.
+        res = self.client.get(
+            "/api/dashboard/delegate/analytics/"
+            "?date_from=2026-08-13&date_to=2026-08-31"
+        )
+        self.assertEqual(res.data["totals"]["visits"], 2)
+
+    def test_rep_cannot_view_another_reps_analytics(self):
+        self._seed()
+        self.auth("medrep_other", "password123")
+        res = self.client.get(
+            f"/api/dashboard/delegate/analytics/?rep={self.med_rep.id}"
+        )
+        self.assertEqual(res.status_code, 403)
+
+    def test_manager_can_scope_analytics_to_a_rep(self):
+        self._seed()
+        self.auth("manager_test", "password123")
+        res = self.client.get(
+            f"/api/dashboard/delegate/analytics/?rep={self.med_rep.id}"
+            "&date_from=2026-08-01&date_to=2026-08-31"
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["totals"]["visits"], 3)
+
+
 class PermissionTests(BaseAPITest):
     def test_only_admin_creates_products(self):
         self.auth("manager_test", "password123")
