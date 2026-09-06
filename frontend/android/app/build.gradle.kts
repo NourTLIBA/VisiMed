@@ -8,7 +8,8 @@ plugins {
 android {
     namespace = "dz.visimed.visimed"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // No plugin ships native (C/C++) code, so the NDK isn't needed. Leaving it
+    // unpinned avoids CI failures when the Flutter-default NDK isn't installed.
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
