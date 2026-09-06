@@ -33,8 +33,8 @@ jobs:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
-            echo "::error::RENDER_DEPLOY_HOOK_URL secret is not set — add it in repo Settings → Secrets → Actions (see backend/DEPLOY.md)."
-            exit 1
+            echo "::warning::RENDER_DEPLOY_HOOK_URL secret not set — skipping deploy. Add it in Settings → Secrets → Actions once the Render service exists (see backend/DEPLOY.md). Render also auto-deploys from the Blueprint if you enable autoDeploy."
+            exit 0
           fi
           curl -fsSL -X POST "$RENDER_DEPLOY_HOOK_URL"
           echo "Render deploy triggered."

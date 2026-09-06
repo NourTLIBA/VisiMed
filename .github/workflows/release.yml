@@ -38,6 +38,12 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          cache: true
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - run: flutter --version && flutter doctor -v
 
       - run: flutter pub get
 
