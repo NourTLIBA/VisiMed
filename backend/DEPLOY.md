@@ -49,6 +49,11 @@ Both deploy from `main` via GitHub Actions.
 | `THROTTLE_LOGIN` | `10/min` (default) | login rate limit |
 | `TOKEN_EXPIRED_AFTER_HOURS` | `24` (default) | API token TTL |
 | `DJANGO_SECURE_SSL` | `true` (default when DEBUG=false) | set `false` only behind a proxy that can't do TLS |
+| `DEMO_MOCK` | `true` in `render.yaml` | fills empty analytics fields (objectives, orders, coverage, contact info) with coherent demo values. **Set `false` once real data is being entered.** Never alters stored rows — see `visimed/mock.py`. |
+
+The build command also runs `seed_visits --if-empty` (idempotent: no-op once any
+visit exists), so a fresh Render DB starts with ~42 demo visits + doctors +
+orders + weekly objectives for `medrep1` / `pharmrep1`.
 
 ## Frontend — Netlify
 
@@ -69,7 +74,7 @@ up the new `VISIMED_API_URL`.
 ```bash
 cd backend
 python manage.py migrate
-python manage.py seed_users        # demo users: admin/adminpass, medrep1/med123, …
+python manage.py seed_users        # demo users: admin/admin123, medrep1/med123, pharmrep1/pharma123, manager1/manager123
 python manage.py runserver
 ```
 SQLite is used automatically when `POSTGRES_NAME` is unset. `DEBUG` defaults to

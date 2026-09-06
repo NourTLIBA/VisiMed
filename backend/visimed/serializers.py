@@ -3,6 +3,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
+from . import mock
+
 from .models import (
     Doctor,
     Locality,
@@ -133,6 +135,9 @@ class DoctorSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["owner", "created_at"]
 
+    def to_representation(self, instance):
+        return mock.decorate_contact("doctor", super().to_representation(instance))
+
 
 class PharmacySerializer(serializers.ModelSerializer):
     visit_count = serializers.IntegerField(read_only=True, required=False)
@@ -156,6 +161,11 @@ class PharmacySerializer(serializers.ModelSerializer):
             "last_visit_date",
         ]
         read_only_fields = ["owner", "created_at"]
+
+    def to_representation(self, instance):
+        return mock.decorate_contact(
+            "pharmacy", super().to_representation(instance)
+        )
 
 
 class VisitProductSerializer(serializers.ModelSerializer):

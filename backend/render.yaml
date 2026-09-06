@@ -16,6 +16,7 @@ services:
       python manage.py seed_users &&
       python manage.py seed_localities &&
       python manage.py seed_products &&
+      python manage.py seed_visits --if-empty &&
       python manage.py backfill_targets
     startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 60
     healthCheckPath: /api/health/
@@ -34,6 +35,10 @@ services:
       # Set this to the deployed web app's origin, e.g. https://visimed.netlify.app
       - key: CORS_ALLOWED_ORIGINS
         sync: false
+      # Showcase deployment: fill empty analytics fields with coherent demo
+      # values. Set to "false" once real data is being entered.
+      - key: DEMO_MOCK
+        value: "true"
       - key: POSTGRES_NAME
         fromDatabase:
           name: visimed-db

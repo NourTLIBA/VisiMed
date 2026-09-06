@@ -1,7 +1,7 @@
 import datetime
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from rest_framework.test import APIClient
 
@@ -331,6 +331,65 @@ class DelegateAnalyticsTests(BaseAPITest):
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data["totals"]["visits"], 3)
+
+
+class DemoMockTests(BaseAPITest):
+    def setUp(self):
+        super().setUp()
+        # medrep_test logs 2 Alger visits this week; no Objective row exists.
+        self.auth("medrep_test", "password123")
+        today = timezone.localdate()
+        for i in range(2):
+            self.client.post(
+                "/api/visits/",
+                self._visit_payload(date=today.isoformat(), target_name=f"Dr. W{i}"),
+                format="json",
+            )
+
+    def test_off_by_default(self):
+        res = self.client.get("/api/dashboard/delegate/")
+        self.assertIsNone(res.data["objective"]["target"])
+        self.assertIsNone(res.data["objective"]["pct"])
+        d = Doctor.objects.create(name="Dr. Blank", wilaya="Alger")
+        res = self.client.get("/api/doctors/?all=1")
+        row = next(r for r in res.data if r["id"] == d.id)
+        self.assertEqual(row["telephone"], "")
+
+    @override_settings(DEMO_MOCK=True)
+    def test_fills_objective_and_is_deterministic(self):
+        r1 = self.client.get("/api/dashboard/delegate/").data["objective"]
+        r2 = self.client.get("/api/dashboard/delegate/").data["objective"]
+        self.assertIsNotNone(r1["target"])
+        self.assertGreater(r1["target"], 0)
+        self.assertIsNotNone(r1["pct"])
+        self.assertEqual(r1, r2)  # deterministic
+
+    @override_settings(DEMO_MOCK=True)
+    def test_manager_totals_equal_sum_of_reps(self):
+        # The manager roll-up must equal the sum of each managed rep's figure
+        # as that rep's own Statistiques view / the leaderboard would show it.
+        self.auth("manager_test", "password123")
+        mgr = self.client.get("/api/dashboard/manager/").data
+        board = self.client.get("/api/dashboard/leaderboard/").data["ranking"]
+        self.assertEqual(
+            mgr["objective_attainment"]["target"],
+            sum(r["objective"]["target"] or 0 for r in board),
+        )
+        self.assertEqual(
+            mgr["orders"]["month"], sum(r["orders_month"] for r in board)
+        )
+        self.assertEqual(
+            sum(mgr["orders"]["by_status"].values()), mgr["orders"]["month"]
+        )
+
+    @override_settings(DEMO_MOCK=True)
+    def test_decorates_blank_contact_fields(self):
+        d = Doctor.objects.create(name="Dr. Blank", wilaya="Alger")
+        res = self.client.get("/api/doctors/?all=1")
+        row = next(r for r in res.data if r["id"] == d.id)
+        self.assertTrue(row["telephone"])
+        self.assertIn("@", row["email"])
+        self.assertTrue(row["specialty"])
 
 
 class PermissionTests(BaseAPITest):

@@ -188,6 +188,13 @@ SECURE_HSTS_PRELOAD = not DEBUG
 
 TOKEN_EXPIRED_AFTER_HOURS = int(os.environ.get("TOKEN_EXPIRED_AFTER_HOURS", 24))
 
+# ── Demo gap-filling ───────────────────────────────────────────────────────
+# When on, the analytics endpoints synthesise *empty* fields (no objective
+# set, zero orders/coverage, blank contact info) with deterministic, mutually
+# consistent values so a showcase deployment isn't full of "—" / 0. Never
+# alters stored rows. Leave OFF for a real dataset. See visimed/mock.py.
+DEMO_MOCK = _env_bool("DEMO_MOCK", False)
+
 # ── Test-run overrides ─────────────────────────────────────────────────────
 # Keep the suite deterministic: no HTTPS redirect and no rate-limiting.
 if _TESTING:

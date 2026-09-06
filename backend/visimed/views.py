@@ -38,6 +38,7 @@ from .models import (
     VisitType,
     normalize_name,
 )
+from . import mock
 from .filters import apply_visit_filters, parse_range
 from .permissions import IsAdmin, IsManagerOrAdmin
 from .serializers import (
@@ -433,17 +434,47 @@ def _window_counts(visits):
     }
 
 
+def _rep_orders(rep_id, date_from, date_to):
+    """A rep's order count in a window — real, or synthetic when DEMO_MOCK is
+    on. Keyed on (rep, window) so the delegate view and the manager roll-up
+    (sum over reps) land on the same number."""
+    real = Prescription.objects.filter(
+        rep_id=rep_id,
+        created_at__date__gte=date_from,
+        created_at__date__lte=date_to,
+    ).count()
+    return mock.count(real, "repord", rep_id, date_from, date_to, lo=4, hi=16)
+
+
+def _weekly_visits_target(rep, week_start, actual_visits):
+    """The rep's weekly visits target: their Objective row, else a synthetic
+    one when DEMO_MOCK is on, else None. Shared by the delegate stats and the
+    manager roll-up so the two never disagree."""
+    obj = Objective.objects.filter(
+        rep=rep, period_type="weekly", period_start=week_start
+    ).first()
+    if obj and obj.visits_target:
+        return obj.visits_target
+    if mock.enabled():
+        return mock.objective_target(rep.id, week_start, actual_visits)
+    return None
+
+
 def _objective_attainment(reps, start):
-    """Actual vs. targeted visits for the weekly objectives starting `start`."""
-    objs = Objective.objects.filter(
-        rep__in=reps, period_type="weekly", period_start=start
-    )
-    target = objs.aggregate(t=Sum("visits_target"))["t"] or 0
+    """Actual vs. targeted visits for the week starting `start`, aggregated
+    over `reps` (per-rep so it matches each rep's own Statistiques view)."""
+    end = start + datetime.timedelta(days=6)
+    target = actual = 0
+    for rep in reps:
+        rep_actual = VisitRecord.objects.filter(
+            rep=rep, date__gte=start, date__lte=end
+        ).count()
+        rep_target = _weekly_visits_target(rep, start, rep_actual)
+        if rep_target:
+            target += rep_target
+            actual += rep_actual
     if not target:
         return None
-    actual = VisitRecord.objects.filter(
-        rep__in=reps, date__gte=start, date__lte=start + datetime.timedelta(days=6)
-    ).count()
     return {
         "target": target,
         "actual": actual,
@@ -470,9 +501,8 @@ class ManagerDashboardView(APIView):
             reps = reps.filter(pk=rep_id)
 
         month_visits = visits.filter(date__gte=month0)
+        scope = wilaya or rep_id or "all"
 
-        total_doctors = Doctor.objects.count()
-        total_pharmacies = Pharmacy.objects.count()
         covered_doctors = (
             visits.filter(doctor__isnull=False)
             .values("doctor_id")
@@ -484,6 +514,12 @@ class ManagerDashboardView(APIView):
             .values("pharmacy_id")
             .distinct()
             .count()
+        )
+        covered_doctors, total_doctors = mock.coverage(
+            covered_doctors, Doctor.objects.count(), "doccov", scope
+        )
+        covered_pharmacies, total_pharmacies = mock.coverage(
+            covered_pharmacies, Pharmacy.objects.count(), "phcov", scope
         )
         new_doctors_month = Doctor.objects.filter(
             created_at__date__gte=month0
@@ -497,8 +533,45 @@ class ManagerDashboardView(APIView):
             brochure_patient=Sum("qty_brochure_patient"),
             affiche=Sum("qty_affiche"),
         )
-        promo_total = sum(v or 0 for v in material.values())
-        orders_month = Prescription.objects.filter(created_at__date__gte=month0)
+        material = {k: (v or 0) for k, v in material.items()}
+        material = mock.material_breakdown(material, "promo", scope, month0)
+        promo_total = sum(material.values())
+
+        # Orders. With DEMO_MOCK on, the total is the per-rep sum (real where a
+        # rep has orders, synthetic where they don't) so it equals what each
+        # delegate's Statistiques screen and the leaderboard show. Off = exact.
+        real_orders = Prescription.objects.filter(created_at__date__gte=month0)
+        if mock.enabled() and reps.exists():
+            orders_count = sum(_rep_orders(r.id, month0, today) for r in reps)
+            orders_by_status = mock.distribution(
+                {}, orders_count,
+                {"pending": 2, "confirmed": 3, "delivered": 4, "cancelled": 1},
+                "ordstatus", scope,
+            )
+        else:
+            orders_count = real_orders.count()
+            orders_by_status = {
+                row["status"]: row["c"]
+                for row in real_orders.values("status").annotate(c=Count("id"))
+            }
+
+        month_total = month_visits.count()
+        by_type = {
+            row["visit_type"]: row["c"]
+            for row in month_visits.values("visit_type").annotate(c=Count("id"))
+        }
+        by_type = mock.distribution(
+            by_type, month_total, {"medical": 3, "pharmaceutical": 2},
+            "mgrtype", scope,
+        )
+        by_potential = {
+            row["potential"]: row["c"]
+            for row in month_visits.values("potential").annotate(c=Count("id"))
+        }
+        by_potential = mock.distribution(
+            by_potential, month_total, {"KOL": 2, "A": 3, "B": 3, "C": 2},
+            "mgrpot", scope,
+        )
 
         return Response(
             {
@@ -525,31 +598,10 @@ class ManagerDashboardView(APIView):
                     else 0.0,
                 },
                 "new_doctors_month": new_doctors_month,
-                "promo_material": {
-                    "total": promo_total,
-                    "breakdown": {k: (v or 0) for k, v in material.items()},
-                },
-                "orders": {
-                    "month": orders_month.count(),
-                    "by_status": {
-                        row["status"]: row["c"]
-                        for row in orders_month.values("status").annotate(
-                            c=Count("id")
-                        )
-                    },
-                },
-                "by_visit_type": {
-                    row["visit_type"]: row["c"]
-                    for row in month_visits.values("visit_type").annotate(
-                        c=Count("id")
-                    )
-                },
-                "by_potential": {
-                    row["potential"]: row["c"]
-                    for row in month_visits.values("potential").annotate(
-                        c=Count("id")
-                    )
-                },
+                "promo_material": {"total": promo_total, "breakdown": material},
+                "orders": {"month": orders_count, "by_status": orders_by_status},
+                "by_visit_type": by_type,
+                "by_potential": by_potential,
                 "active_reps": reps.filter(is_active=True).count(),
             }
         )
@@ -562,21 +614,21 @@ def _rep_stats(rep, viewer):
     visits = VisitRecord.objects.filter(rep=rep)
     month_visits = visits.filter(date__gte=month0)
 
-    scoped_doctor_total = Doctor.objects.count()
+    week_visits = visits.filter(date__gte=week0).count()
+
     covered = (
         visits.filter(doctor__isnull=False).values("doctor_id").distinct().count()
     )
-    weekly_obj = Objective.objects.filter(
-        rep=rep, period_type="weekly", period_start=week0
-    ).first()
-    week_visits = visits.filter(date__gte=week0).count()
-    orders_month = Prescription.objects.filter(
-        rep=rep, created_at__date__gte=month0
-    ).count()
+    covered, scoped_doctor_total = mock.coverage(
+        covered, Doctor.objects.count(), "repcov", rep.id
+    )
 
-    objective_pct = None
-    if weekly_obj and weekly_obj.visits_target:
-        objective_pct = round(week_visits / weekly_obj.visits_target * 100, 1)
+    target = _weekly_visits_target(rep, week0, week_visits)
+    objective_pct = (
+        round(week_visits / target * 100, 1) if target else None
+    )
+
+    orders_month = _rep_orders(rep.id, month0, today)
 
     coverage_pct = (
         round(covered / scoped_doctor_total * 100, 1)
@@ -592,7 +644,7 @@ def _rep_stats(rep, viewer):
         "visits_week": week_visits,
         "visits_month": month_visits.count(),
         "objective": {
-            "target": weekly_obj.visits_target if weekly_obj else None,
+            "target": target,
             "actual": week_visits,
             "pct": objective_pct,
         },
@@ -699,11 +751,21 @@ class DelegateAnalyticsView(APIView):
             series.append({"week": cursor.isoformat(), "count": week_counts.get(cursor, 0)})
             cursor += datetime.timedelta(days=7)
 
-        orders = Prescription.objects.filter(
-            rep=rep, created_at__date__gte=date_from, created_at__date__lte=date_to
-        ).count()
+        orders = _rep_orders(rep.id, date_from, date_to)
 
         total = len(rows)
+        if total:
+            by_type = mock.distribution(
+                by_type, total, {"medical": 3, "pharmaceutical": 2},
+                "antype", rep.id, date_from,
+            )
+            by_potential = mock.distribution(
+                by_potential, total, {"KOL": 2, "A": 3, "B": 3, "C": 2},
+                "anpot", rep.id, date_from,
+            )
+            materials = mock.material_breakdown(
+                materials, "anmat", rep.id, date_from
+            )
         return Response(
             {
                 "rep": {"id": rep.id, "username": rep.username, "role": rep.role},
@@ -903,6 +965,12 @@ class AdminKPIView(APIView):
 
     def get(self, request):
         visits = VisitRecord.objects.all()
+        totals = visits.aggregate(
+            total_vials=Sum("qty_vials"),
+            total_readers=Sum("qty_reader"),
+            total_visits=Count("id"),
+        )
+        total_visits = totals["total_visits"] or 0
         by_type = {
             e["visit_type"]: e["c"]
             for e in visits.values("visit_type").annotate(c=Count("id"))
@@ -911,16 +979,21 @@ class AdminKPIView(APIView):
             e["potential"]: e["c"]
             for e in visits.values("potential").annotate(c=Count("id"))
         }
-        totals = visits.aggregate(
-            total_vials=Sum("qty_vials"),
-            total_readers=Sum("qty_reader"),
-            total_visits=Count("id"),
+        by_type = mock.distribution(
+            by_type, total_visits, {"medical": 3, "pharmaceutical": 2}, "kpitype"
+        )
+        by_potential = mock.distribution(
+            by_potential, total_visits, {"KOL": 2, "A": 3, "B": 3, "C": 2}, "kpipot"
         )
         return Response(
             {
-                "total_visits": totals["total_visits"] or 0,
-                "total_vials": totals["total_vials"] or 0,
-                "total_readers": totals["total_readers"] or 0,
+                "total_visits": total_visits,
+                "total_vials": mock.count(
+                    totals["total_vials"] or 0, "kpivials", lo=200, hi=700
+                ),
+                "total_readers": mock.count(
+                    totals["total_readers"] or 0, "kpiread", lo=40, hi=150
+                ),
                 "by_visit_type": by_type,
                 "by_potential": by_potential,
                 "active_reps": User.objects.filter(

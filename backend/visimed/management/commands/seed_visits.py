@@ -74,8 +74,18 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--clear", action="store_true")
+        parser.add_argument(
+            "--if-empty",
+            action="store_true",
+            help="Do nothing if any VisitRecord already exists (safe to run "
+            "on every deploy).",
+        )
 
     def handle(self, *args, **options):
+        if options["if_empty"] and VisitRecord.objects.exists():
+            self.stdout.write("Visits already present — skipping seed_visits.")
+            return
+
         if options["clear"]:
             Prescription.objects.all().delete()
             VisitProduct.objects.all().delete()
