@@ -1,0 +1,92 @@
+name: Release build (APK + web)
+
+# Produces downloadable builds people can try:
+#   • a universal Android APK  (debug-signed — fine for side-loading)
+#   • a zipped Flutter-web bundle
+# and attaches them to a GitHub Release.
+#
+# Trigger: push a tag like `v1.0.0`, or run manually (Actions → Release build →
+# Run workflow) — the manual run makes a pre-release tagged `manual-<run>`.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: Backend API base URL to bake in
+        default: https://visimed-api.onrender.com/api
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter pub get
+
+      - name: Resolve API URL
+        id: cfg
+        run: |
+          URL="${{ github.event.inputs.api_url }}"
+          URL="${URL:-${{ secrets.VISIMED_API_URL }}}"
+          URL="${URL:-https://visimed-api.onrender.com/api}"
+          echo "api_url=$URL" >> "$GITHUB_OUTPUT"
+          echo "version=$(grep -m1 '^version:' pubspec.yaml | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Build APK
+        run: |
+          flutter build apk --release \
+            --dart-define=VISIMED_API_URL="${{ steps.cfg.outputs.api_url }}"
+          mkdir -p ../dist
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             "../dist/visimed-${{ steps.cfg.outputs.version }}.apk"
+
+      - name: Build web
+        run: |
+          flutter build web --release \
+            --dart-define=VISIMED_API_URL="${{ steps.cfg.outputs.api_url }}"
+          (cd build/web && zip -qr "../../../dist/visimed-web-${{ steps.cfg.outputs.version }}.zip" .)
+
+      - name: Tag for manual runs
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "RELEASE_TAG=manual-${{ github.run_number }}" >> "$GITHUB_ENV"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG || github.ref_name }}
+          prerelease: ${{ github.event_name == 'workflow_dispatch' }}
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          files: |
+            dist/visimed-*.apk
+            dist/visimed-web-*.zip
+          body: |
+            Downloadable builds of VisiMed.
+
+            - **Android**: download the `.apk`, then allow install from unknown
+              sources on your device. It is debug-signed, so Play Protect may
+              show a warning — that is expected for a side-loaded build.
+            - **Web**: the live app is the easiest way to try it —
+              https://visimed.netlify.app (add to home screen for a PWA). The
+              zip is the same bundle for self-hosting.
+
+            API: `${{ steps.cfg.outputs.api_url }}`
+            Demo logins: `medrep1` / `med123` · `pharmrep1` / `pharma123` · `admin` / `admin123`
