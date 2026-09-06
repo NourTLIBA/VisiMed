@@ -38,11 +38,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.surface,
-      appBar: AppBar(
-        backgroundColor: AppTheme.primaryDark,
-        title: const Text('FICHE MÉDECIN',
-            style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.w900)),
-      ),
+      appBar: AppBar(title: const Text('Fiche médecin')),
       body: FutureBuilder<DoctorHistory>(
         future: _future,
         builder: (context, snap) {
@@ -56,7 +52,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
               padding: const EdgeInsets.all(24),
               child: Text('${snap.error}',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey.shade600)),
+                  style: TextStyle(color: AppTheme.inkMuted)),
             ));
           }
           final h = snap.data!;
@@ -85,7 +81,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                           ),
                           child: Text(doc.potential.name,
                               style: TextStyle(
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w700,
                                   color: pc)),
                         ),
                         const SizedBox(width: 14),
@@ -96,15 +92,15 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                               Text(doc.name,
                                   style: const TextStyle(
                                       fontSize: 18,
-                                      fontWeight: FontWeight.w900,
-                                      color: AppTheme.primaryDark)),
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.ink)),
                               const SizedBox(height: 2),
                               Text(
                                 [doc.specialty, doc.structureType]
                                     .where((s) => s.isNotEmpty)
                                     .join(' · '),
                                 style: TextStyle(
-                                    color: Colors.grey.shade600, fontSize: 13),
+                                    color: AppTheme.inkMuted, fontSize: 13),
                               ),
                             ],
                           ),
@@ -177,7 +173,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                           label: 'Commandes',
                           value: '${h.ordersCount}',
                           icon: Icons.receipt_long_outlined,
-                          color: AppTheme.gold)),
+                          color: AppTheme.accent)),
                 ],
               ),
 
@@ -187,12 +183,12 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
               DecoCard(
                 child: h.nextActionText == null || h.nextActionText!.isEmpty
                     ? Text('Aucune action planifiée.',
-                        style: TextStyle(color: Colors.grey.shade500))
+                        style: TextStyle(color: AppTheme.inkFaint))
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Icon(Icons.chevron_right,
-                              color: AppTheme.gold),
+                              color: AppTheme.inkFaint),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Column(
@@ -201,7 +197,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                                 Text(h.nextActionText!,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w700,
-                                        color: AppTheme.primaryDark)),
+                                        color: AppTheme.ink)),
                                 if (h.nextActionDate != null)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 4),
@@ -222,7 +218,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
               DecoCard(
                 child: h.productsPresented.isEmpty
                     ? Text('Aucun produit enregistré.',
-                        style: TextStyle(color: Colors.grey.shade500))
+                        style: TextStyle(color: AppTheme.inkFaint))
                     : Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -254,7 +250,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
               if (h.orders.isEmpty)
                 DecoCard(
                     child: Text('Aucune commande.',
-                        style: TextStyle(color: Colors.grey.shade500)))
+                        style: TextStyle(color: AppTheme.inkFaint)))
               else
                 ...h.orders.map((o) => Padding(
                       padding: const EdgeInsets.only(bottom: 8),
@@ -270,7 +266,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                                     : o.productName,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w700,
-                                    color: AppTheme.primaryDark),
+                                    color: AppTheme.ink),
                               ),
                             ),
                             DecoChip('x${o.quantity}',
@@ -311,10 +307,10 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
             Expanded(
                 child: Text(label,
                     style: TextStyle(
-                        fontSize: 13, color: Colors.grey.shade700))),
+                        fontSize: 13, color: AppTheme.inkMuted))),
             Text('${v ?? 0}',
                 style: const TextStyle(
-                    fontWeight: FontWeight.w800, color: AppTheme.primaryDark)),
+                    fontWeight: FontWeight.w700, color: AppTheme.ink)),
           ],
         ),
       );
@@ -323,7 +319,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
       {required String empty, Color color = AppTheme.primary}) {
     if (notes.isEmpty) {
       return DecoCard(
-          child: Text(empty, style: TextStyle(color: Colors.grey.shade500)));
+          child: Text(empty, style: TextStyle(color: AppTheme.inkFaint)));
     }
     return Column(
       children: notes
@@ -343,19 +339,19 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.grey.shade600)),
+                                  color: AppTheme.inkMuted)),
                           const Spacer(),
                           if (n.rep.isNotEmpty)
                             Text(n.rep,
                                 style: TextStyle(
                                     fontSize: 11,
-                                    color: Colors.grey.shade500)),
+                                    color: AppTheme.inkFaint)),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Text(n.text,
                           style: const TextStyle(
-                              color: AppTheme.primaryDark, fontSize: 13)),
+                              color: AppTheme.ink, fontSize: 13)),
                     ],
                   ),
                 ),
@@ -379,8 +375,8 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                 const SizedBox(width: 8),
                 Text(_d(v.date),
                     style: const TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: AppTheme.primaryDark)),
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.ink)),
                 const Spacer(),
                 DecoChip('${v.durationMinutes}′', color: AppTheme.primary),
               ],
@@ -388,7 +384,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
             if (v.comment != null && v.comment!.isNotEmpty) ...[
               const SizedBox(height: 6),
               Text(v.comment!,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+                  style: TextStyle(fontSize: 12, color: AppTheme.inkMuted)),
             ],
             if (v.presentedProducts.isNotEmpty) ...[
               const SizedBox(height: 6),

@@ -18,19 +18,13 @@ class AdminScreen extends StatelessWidget {
       length: 2,
       child: Column(
         children: [
-          Container(
-            color: Colors.white,
+          Material(
+            color: AppTheme.cardBg,
             child: TabBar(
-              labelColor: AppTheme.primary,
-              unselectedLabelColor: Colors.grey.shade500,
-              indicatorColor: AppTheme.primary,
-              indicatorWeight: 3,
-              labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w700, fontSize: 13),
               tabs: [
-                Tab(
-                  icon: const Icon(Icons.bar_chart_outlined, size: 20),
-                  text: 'KPIs',
+                const Tab(
+                  icon: Icon(Icons.bar_chart_outlined, size: 20),
+                  text: 'Indicateurs',
                 ),
                 Tab(
                   icon: const Icon(Icons.people_outline, size: 20),
@@ -198,7 +192,7 @@ class _StackedRatioBar extends StatelessWidget {
             child: Container(
               height: 16,
               width: double.infinity,
-              color: Colors.grey.shade100,
+              color: AppTheme.surfaceAlt,
               child: Row(
                 children: [
                   if (medicalCount > 0)
@@ -240,7 +234,7 @@ class _StackedRatioBar extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.primaryDark,
+                        color: AppTheme.ink,
                       ),
                     ),
                   ],
@@ -262,7 +256,7 @@ class _StackedRatioBar extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.primaryDark,
+                        color: AppTheme.ink,
                       ),
                     ),
                   ],
@@ -295,8 +289,8 @@ class _CompactMetric extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE8ECF5), width: 1),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: AppTheme.softShadow,
       ),
       child: Row(
         children: [
@@ -318,7 +312,7 @@ class _CompactMetric extends StatelessWidget {
                   value,
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: color,
                     height: 1.1,
                   ),
@@ -329,7 +323,7 @@ class _CompactMetric extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade500,
+                    color: AppTheme.inkFaint,
                     height: 1.1,
                   ),
                   maxLines: 1,
@@ -360,8 +354,8 @@ class _SectionCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8ECF5), width: 1),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: AppTheme.softShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -377,7 +371,7 @@ class _SectionCard extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
-                    color: AppTheme.primaryDark,
+                    color: AppTheme.ink,
                   ),
                 ),
               ],
@@ -426,7 +420,7 @@ class _BreakdownRow extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppTheme.primaryDark,
+                    color: AppTheme.ink,
                   ),
                 ),
               ),
@@ -443,7 +437,7 @@ class _BreakdownRow extends StatelessWidget {
                 '(${(pct * 100).toStringAsFixed(0)}%)',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey.shade500,
+                  color: AppTheme.inkFaint,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -455,7 +449,7 @@ class _BreakdownRow extends StatelessWidget {
             child: Container(
               height: 6,
               width: double.infinity,
-              color: Colors.grey.shade100,
+              color: AppTheme.surfaceAlt,
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: FractionallySizedBox(
@@ -505,7 +499,7 @@ class _RepPanelState extends State<_RepPanel> {
                   Text(
                     '${reps.length} representative${reps.length == 1 ? '' : 's'}',
                     style: TextStyle(
-                        fontSize: 13, color: Colors.grey.shade600),
+                        fontSize: 13, color: AppTheme.inkMuted),
                   ),
                   const Spacer(),
                   FilledButton.icon(
@@ -535,10 +529,10 @@ class _RepPanelState extends State<_RepPanel> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.people_outline,
-                              size: 48, color: Colors.grey.shade300),
+                              size: 48, color: AppTheme.hairline),
                           const SizedBox(height: 12),
                           Text('No representatives yet',
-                              style: TextStyle(color: Colors.grey.shade500)),
+                              style: TextStyle(color: AppTheme.inkFaint)),
                         ],
                       ),
                     )
@@ -555,9 +549,8 @@ class _RepPanelState extends State<_RepPanel> {
                         return Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                                color: const Color(0xFFE8ECF5), width: 1),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: AppTheme.softShadow,
                           ),
                           child: ListTile(
                             leading: CircleAvatar(
@@ -577,7 +570,7 @@ class _RepPanelState extends State<_RepPanel> {
                               '${r.role.name} · ${r.assignedRegions}',
                               style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey.shade500),
+                                  color: AppTheme.inkFaint),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,

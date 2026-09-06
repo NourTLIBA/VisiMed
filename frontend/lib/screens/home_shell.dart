@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
-
 import '../models/models.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
@@ -28,6 +27,13 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
+
+  String _roleLabel(AppUser u, AppLocalizations l) {
+    if (u.isAdmin) return l.roleAdmin;
+    if (u.isManager) return l.roleManager;
+    if (u.isPharmaRep) return l.rolePharmaRep;
+    return l.roleMedRep;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,99 +63,69 @@ class _HomeShellState extends State<HomeShell> {
               Icons.dashboard_outlined, Icons.dashboard, l.dashboard);
           if (user.isAdmin) {
             tab(AdminScreen(state: widget.state),
-                Icons.admin_panel_settings_outlined,
-                Icons.admin_panel_settings, l.roleAdmin);
+                Icons.tune_outlined, Icons.tune, l.roleAdmin);
           } else {
             tab(LeaderboardScreen(state: widget.state),
                 Icons.emoji_events_outlined, Icons.emoji_events, l.team);
           }
-          tab(doctorsScreen, Icons.folder_shared_outlined,
-              Icons.folder_shared, l.doctors);
+          tab(doctorsScreen, Icons.folder_shared_outlined, Icons.folder_shared,
+              l.doctors);
           tab(mapScreen, Icons.map_outlined, Icons.map, l.map);
           tab(AlertsScreen(state: widget.state),
-              Icons.notifications_active_outlined,
-              Icons.notifications_active, l.alerts);
+              Icons.notifications_none_rounded,
+              Icons.notifications_rounded, l.alerts);
         } else {
-          tab(VisitsScreen(state: widget.state), Icons.list_alt_outlined,
-              Icons.list_alt, l.visits);
-          tab(CalendarScreen(state: widget.state),
-              Icons.calendar_month_outlined, Icons.calendar_month, l.calendar);
-          tab(doctorsScreen, Icons.folder_shared_outlined,
-              Icons.folder_shared, l.doctors);
+          tab(VisitsScreen(state: widget.state), Icons.article_outlined,
+              Icons.article, l.visits);
+          tab(CalendarScreen(state: widget.state), Icons.calendar_today_outlined,
+              Icons.calendar_today, l.calendar);
+          tab(doctorsScreen, Icons.folder_shared_outlined, Icons.folder_shared,
+              l.doctors);
           tab(mapScreen, Icons.map_outlined, Icons.map, l.map);
-          tab(DelegatePerfScreen(state: widget.state),
-              Icons.insights_outlined, Icons.insights, l.performance);
+          tab(DelegatePerfScreen(state: widget.state), Icons.insights_outlined,
+              Icons.insights, l.performance);
         }
 
         if (_index >= tabs.length) _index = 0;
 
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: AppTheme.primaryDark,
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(2),
-              child: Container(
-                height: 2,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.transparent,
-                      AppTheme.gold,
-                      AppTheme.gold,
-                      Colors.transparent,
-                    ],
-                    stops: [0.0, 0.2, 0.8, 1.0],
-                  ),
-                ),
-              ),
-            ),
+            titleSpacing: 16,
             title: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Art Deco logo frame
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 34,
+                  height: 34,
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(7),
-                    border: Border.all(color: AppTheme.gold.withAlpha(120), width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: AppTheme.softShadow,
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const Icon(
-                        Icons.local_hospital,
-                        size: 20,
-                        color: AppTheme.primary,
-                      ),
-                    ),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Icon(
+                        Icons.local_hospital, size: 18, color: AppTheme.primary),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'VISIMED',
-                      style: TextStyle(
-                        color: AppTheme.ricePaper,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 2.5,
-                      ),
-                    ),
+                    const Text('VisiMed',
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.ink)),
                     Text(
-                      'Field CRM',
-                      style: TextStyle(
-                        color: AppTheme.gold.withAlpha(200),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 1.2,
-                      ),
+                      '${_roleLabel(user, l)} · ${user.username}',
+                      style: const TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w400,
+                          color: AppTheme.inkFaint),
                     ),
                   ],
                 ),
@@ -158,99 +134,48 @@ class _HomeShellState extends State<HomeShell> {
             actions: [
               ValueListenableBuilder<Locale>(
                 valueListenable: widget.state.currentLocale,
-                builder: (context, _, __) {
-                  return LanguageSelector(state: widget.state);
-                },
-              ),
-              // Art Deco role badge
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppTheme.gold.withAlpha(100), width: 1),
-                  borderRadius: BorderRadius.circular(4),
-                  color: Colors.white.withAlpha(12),
-                ),
-                child: Text(
-                  user.username.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.2,
-                    color: AppTheme.ricePaper,
-                  ),
-                ),
+                builder: (context, _, __) =>
+                    LanguageSelector(state: widget.state, color: AppTheme.inkMuted),
               ),
               IconButton(
-                icon: const Icon(Icons.download_outlined, size: 20),
-                tooltip: 'Export data',
+                icon: const Icon(Icons.file_download_outlined, size: 21),
+                tooltip: 'Exporter',
                 onPressed: () => _showExportSheet(context),
               ),
               IconButton(
                 icon: const Icon(Icons.logout_rounded, size: 20),
-                tooltip: 'Sign out',
+                tooltip: 'Déconnexion',
                 onPressed: () {
                   widget.state.logout();
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
-                      builder: (_) => LoginScreen(state: widget.state),
-                    ),
+                        builder: (_) => LoginScreen(state: widget.state)),
                     (route) => false,
                   );
                 },
               ),
+              const SizedBox(width: 4),
             ],
           ),
           body: tabs[_index],
-          bottomNavigationBar: Container(
+          bottomNavigationBar: DecoratedBox(
             decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(color: AppTheme.gold, width: 1.5),
-              ),
+              border: Border(top: BorderSide(color: AppTheme.hairline)),
             ),
             child: NavigationBar(
-              backgroundColor: Colors.white,
-              indicatorColor: AppTheme.gold.withAlpha(35),
               selectedIndex: _index,
               onDestinationSelected: (i) => setState(() => _index = i),
               destinations: destinations,
             ),
           ),
           floatingActionButton: _index == 0 && !user.isStaff
-              ? Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppTheme.gold, width: 1.2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppTheme.primary.withAlpha(60),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+              ? FloatingActionButton.extended(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (_) => VisitFormScreen(state: widget.state)),
                   ),
-                  child: FloatingActionButton.extended(
-                    onPressed: () async {
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => VisitFormScreen(state: widget.state),
-                        ),
-                      );
-                    },
-                    backgroundColor: AppTheme.primary,
-                    foregroundColor: AppTheme.gold,
-                    elevation: 0,
-                    icon: const Icon(Icons.add),
-                    label: const Text(
-                      'LOG VISIT',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.5,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
+                  icon: const Icon(Icons.add_rounded),
+                  label: Text(l.newVisit),
                 )
               : null,
         );
@@ -261,42 +186,36 @@ class _HomeShellState extends State<HomeShell> {
   Future<void> _showExportSheet(BuildContext context) async {
     final format = await showModalBottomSheet<String>(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // drag handle
               Container(
                 width: 40,
                 height: 4,
-                margin: const EdgeInsets.only(bottom: 16),
+                margin: const EdgeInsets.only(bottom: 14),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppTheme.hairline,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20, bottom: 8),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Export report as',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 16),
-                  ),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 0, 6),
+                  child: Text('Exporter le rapport',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 15)),
                 ),
               ),
-              _exportTile(ctx, Icons.table_chart_outlined,
-                  'CSV', 'Spreadsheet-compatible', 'csv'),
-              _exportTile(ctx, Icons.grid_on_outlined,
-                  'Excel (XLSX)', 'Formatted workbook', 'xlsx'),
-              _exportTile(ctx, Icons.picture_as_pdf_outlined,
-                  'PDF', 'Print-ready report', 'pdf'),
+              _exportTile(ctx, Icons.grid_on_outlined, 'CSV',
+                  'Compatible tableur', 'csv'),
+              _exportTile(ctx, Icons.table_view_outlined, 'Excel (XLSX)',
+                  'Classeur formaté', 'xlsx'),
+              _exportTile(ctx, Icons.picture_as_pdf_outlined, 'PDF',
+                  'Prêt à imprimer', 'pdf'),
               const SizedBox(height: 8),
             ],
           ),
@@ -308,25 +227,14 @@ class _HomeShellState extends State<HomeShell> {
     try {
       final fileNameOrPath = await widget.state.api.downloadReport(format);
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Saved: $fileNameOrPath'),
-          behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Enregistré : $fileNameOrPath')));
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${AppLocalizations.of(context)!.error}: $e'),
-          backgroundColor: AppTheme.KOLAccent,
-          behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('${AppLocalizations.of(context)!.error} : $e'),
+        backgroundColor: AppTheme.danger,
+      ));
     }
   }
 
@@ -337,16 +245,15 @@ class _HomeShellState extends State<HomeShell> {
         width: 42,
         height: 42,
         decoration: BoxDecoration(
-          color: AppTheme.primary.withAlpha(15),
-          borderRadius: BorderRadius.circular(10),
+          color: AppTheme.primary.withAlpha(20),
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, color: AppTheme.primary, size: 22),
+        child: Icon(icon, color: AppTheme.primary, size: 21),
       ),
-      title: Text(title,
-          style: const TextStyle(fontWeight: FontWeight.w600)),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
       subtitle: Text(sub,
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
-      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+          style: const TextStyle(fontSize: 12, color: AppTheme.inkFaint)),
+      trailing: const Icon(Icons.chevron_right, color: AppTheme.inkFaint),
       onTap: () => Navigator.pop(ctx, val),
     );
   }

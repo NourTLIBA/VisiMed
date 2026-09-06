@@ -73,9 +73,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                               children: [
                                 Text(r.username,
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.w800,
+                                        fontWeight: FontWeight.w700,
                                         fontSize: 15,
-                                        color: AppTheme.primaryDark)),
+                                        color: AppTheme.ink)),
                                 const SizedBox(height: 6),
                                 Wrap(
                                   spacing: 6,
@@ -102,13 +102,13 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                             children: [
                               Text(r.score.toStringAsFixed(2),
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.w900,
+                                      fontWeight: FontWeight.w700,
                                       fontSize: 18,
                                       color: AppTheme.primary)),
                               Text('score',
                                   style: TextStyle(
                                       fontSize: 10,
-                                      color: Colors.grey.shade500)),
+                                      color: AppTheme.inkFaint)),
                             ],
                           ),
                         ],
@@ -129,7 +129,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           padding: const EdgeInsets.all(24),
           child: Text('$e',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade600)),
+              style: TextStyle(color: AppTheme.inkMuted)),
         )),
       ]);
 }
@@ -152,13 +152,14 @@ class _RankBadge extends StatelessWidget {
       height: 40,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: medal ? c.withAlpha(30) : Colors.grey.shade100,
-        border: Border.all(color: c, width: 1.4),
-        borderRadius: BorderRadius.circular(8),
+        color: medal ? c.withAlpha(30) : AppTheme.surfaceAlt,
+        shape: BoxShape.circle,
       ),
       child: Text('$rank',
           style: TextStyle(
-              fontWeight: FontWeight.w900, color: c, fontSize: 16)),
+              fontWeight: FontWeight.w700,
+              color: medal ? c : AppTheme.inkMuted,
+              fontSize: 16)),
     );
   }
 }
@@ -265,15 +266,15 @@ class _DelegateSheetState extends State<_DelegateSheet> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-                color: AppTheme.gold, borderRadius: BorderRadius.circular(2)),
+                color: AppTheme.hairline,
+                borderRadius: BorderRadius.circular(2)),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           Text(widget.username,
               style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
-                  color: AppTheme.primaryDark)),
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.ink)),
           const SizedBox(height: 14),
           if (_error != null)
             Text('$_error')
@@ -374,10 +375,10 @@ class DelegateStatsBody extends StatelessWidget {
             Expanded(
                 child: Text(k,
                     style: TextStyle(
-                        color: Colors.grey.shade700, fontSize: 13))),
+                        color: AppTheme.inkMuted, fontSize: 13))),
             Text(v,
                 style: const TextStyle(
-                    fontWeight: FontWeight.w800, color: AppTheme.primaryDark)),
+                    fontWeight: FontWeight.w700, color: AppTheme.ink)),
           ],
         ),
       );
