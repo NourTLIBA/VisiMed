@@ -8,9 +8,8 @@ repository (Django REST backend under `backend/`, Flutter client under
 **where**, **why it matters**, and the **fix direction** taken in the
 accompanying change set.
 
-> Note: `Existing_problematics.pdf` in the repo root is unrelated to VisiMed (it
-> describes container-terminal optimisation for another club project) and is
-> ignored here.
+> Note: a stray `Existing_problematics.pdf` (container-terminal optimisation for
+> an unrelated project) was removed from the repo root on 2026-09-06.
 
 ---
 

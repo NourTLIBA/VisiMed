@@ -8,7 +8,7 @@ SQLite locally, Postgres in prod. Deployed on **Render** — see `DEPLOY.md`.
 ```bash
 cd backend
 python manage.py migrate
-python manage.py seed_users seed_localities seed_products seed_visits   # demo data
+for c in seed_users seed_localities seed_products seed_visits backfill_targets; do python manage.py $c; done  # demo data
 DJANGO_DEBUG=true python manage.py runserver
 python manage.py test visimed      # gate — keep green
 python manage.py check --deploy    # must be clean with a prod-like env

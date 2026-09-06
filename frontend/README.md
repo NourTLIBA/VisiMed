@@ -1,16 +1,28 @@
-# visimed
+# VisiMed — frontend
 
-A new Flutter project.
+Flutter app (Android / iOS / web). See the repo root
+**[README](../README.md)** for what VisiMed is, how to try it, and how to
+deploy.
 
-## Getting Started
+## Quick start
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run -d chrome --dart-define=VISIMED_API_URL=http://localhost:8000/api
+```
 
-A few resources to get you started if this is your first Flutter project:
+- Android emulator → `http://10.0.2.2:8000/api`
+- No `--dart-define` → targets the hosted Render API
+  (`https://visimed-api.onrender.com/api`)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Gate before pushing: `flutter analyze` and `flutter build web` clean.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Architecture & conventions
+
+**[CLAUDE.md](CLAUDE.md)** — screen map, the `ValueNotifier`-only state model,
+the shared `VisitFilter`, and the "warm clinical" design system
+(`lib/theme/app_theme.dart` + `lib/theme/deco.dart`). Read it before touching
+the UI.
+
+App icons are generated from `assets/images/logo.svg` by `tool/gen_logo.py`
+(Pillow only) — never hand-edit the PNGs.

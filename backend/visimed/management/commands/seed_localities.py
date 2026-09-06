@@ -7,22 +7,23 @@ from visimed.models import Locality
 
 
 class Command(BaseCommand):
-    help = "Seed vm_localities from Activity Report - Listes_items.csv"
+    help = "Seed vm_localities from data/Activity Report - Listes_items.csv"
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--csv",
             default=None,
-            help="Path to Listes_items.csv (defaults to repo root)",
+            help="Path to Listes_items.csv (defaults to <repo>/data/)",
         )
 
     def handle(self, *args, **options):
         csv_path = options["csv"]
         if not csv_path:
-            csv_path = (
-                Path(__file__).resolve().parents[4]
-                / "Activity Report - Listes_items.csv"
-            )
+            repo_root = Path(__file__).resolve().parents[4]
+            csv_path = repo_root / "data" / "Activity Report - Listes_items.csv"
+            if not csv_path.exists():
+                # Fall back to the old repo-root location.
+                csv_path = repo_root / "Activity Report - Listes_items.csv"
         csv_path = Path(csv_path)
 
         if not csv_path.exists():
