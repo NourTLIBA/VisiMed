@@ -7,7 +7,10 @@ plugins {
 
 android {
     namespace = "dz.visimed.visimed"
-    compileSdk = flutter.compileSdkVersion
+    // Pinned to 36: recent AndroidX transitive deps refuse to be compiled
+    // against anything lower ("requires ... version 36 or later of the Android
+    // APIs"). Keep >= flutter.compileSdkVersion.
+    compileSdk = maxOf(flutter.compileSdkVersion, 36)
     // No plugin ships native (C/C++) code, so the NDK isn't needed. Leaving it
     // unpinned avoids CI failures when the Flutter-default NDK isn't installed.
 
