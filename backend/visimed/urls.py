@@ -5,6 +5,7 @@ from .views import (
     AdminKPIView,
     AlertsView,
     AuthTokenView,
+    LogoutView,
     DelegateStatsView,
     DoctorViewSet,
     ExportCSVView,
@@ -33,6 +34,7 @@ router.register(r"objectives", ObjectiveViewSet, basename="objective")
 
 urlpatterns = [
     path("auth/login/", AuthTokenView.as_view(), name="auth-login"),
+    path("auth/logout/", LogoutView.as_view(), name="auth-logout"),
     path("exports/csv/", ExportCSVView.as_view(), name="export-csv"),
     path("exports/xlsx/", ExportExcelView.as_view(), name="export-xlsx"),
     path("exports/pdf/", ExportPDFView.as_view(), name="export-pdf"),

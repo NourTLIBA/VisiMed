@@ -102,7 +102,9 @@ class OptionalPagination(PageNumberPagination):
 
 
 class AuthTokenView(ObtainAuthToken):
-    """Login — returns token + user profile."""
+    """Login — returns token + user profile. Rate-limited against brute force."""
+
+    throttle_scope = "login"
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -112,6 +114,16 @@ class AuthTokenView(ObtainAuthToken):
         return Response(
             {"token": token.key, "user": UserProfileSerializer(user).data}
         )
+
+
+class LogoutView(APIView):
+    """Invalidate the caller's token server-side."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        Token.objects.filter(user=request.user).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RepresentativeCRUDViewSet(viewsets.ModelViewSet):
