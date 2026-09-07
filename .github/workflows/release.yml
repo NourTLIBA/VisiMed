@@ -88,9 +88,14 @@ jobs:
         if: steps.apk.outcome == 'failure'
         run: |
           {
-            echo "### ❌ APK build failed"
+            echo "## ❌ APK build failed"
+            echo "### Key lines"
             echo '```'
-            grep -iE 'FAILURE:|What went wrong|> Task .*FAILED|Caused by|Exception|error:|Could not|not found|NDK|license' ../dist/apk-build.log | tail -60 || tail -80 ../dist/apk-build.log
+            grep -inE 'FAILURE:|What went wrong|> Task .*FAILED|Caused by:|Exception|^e: |error:|Could not (find|resolve|create)|not (found|configured|specified)|requires .*(version|Java)|Inconsistent|Namespace not|Execution failed' ../dist/apk-build.log | tail -80 || echo "(no keyword matches)"
+            echo '```'
+            echo "### Last 200 lines"
+            echo '```'
+            tail -200 ../dist/apk-build.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
