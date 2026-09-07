@@ -106,6 +106,27 @@ jobs:
           name: apk-build-log
           path: dist/apk-build.log
 
+      - name: Release notes body
+        id: notes
+        run: |
+          {
+            echo 'Downloadable builds of VisiMed.'
+            echo
+            echo '- **Web** (any device): unzip `visimed-web-*.zip`, serve the folder, open in a browser.'
+            if [ "${{ steps.apk.outcome }}" = "failure" ]; then
+              echo '- **Android**: build failed on CI. Gradle output tail:'
+              echo
+              echo '```'
+              tail -c 5000 ../dist/apk-build.log
+              echo '```'
+            else
+              echo '- **Android**: `visimed-*.apk` attached — allow "install unknown apps", then open it (debug-signed, Play Protect may warn).'
+            fi
+            echo
+            echo "API baked in: ${{ steps.cfg.outputs.api_url }}"
+            echo 'Demo logins: medrep1 / med123 · pharmrep1 / pharma123 · admin / admin123'
+          } > ../dist/notes.md
+
       - name: Tag for manual runs
         if: github.event_name == 'workflow_dispatch'
         run: echo "RELEASE_TAG=manual-${{ github.run_number }}" >> "$GITHUB_ENV"
@@ -116,20 +137,7 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG || github.ref_name }}
           prerelease: ${{ github.event_name == 'workflow_dispatch' }}
           fail_on_unmatched_files: false
-          generate_release_notes: true
+          body_path: dist/notes.md
           files: |
             dist/visimed-*.apk
             dist/visimed-web-*.zip
-          body: |
-            Downloadable builds of VisiMed.
-
-            - **Web** (works on any device): the live app is the easiest way to
-              try it — your Netlify site (add to home screen for a PWA). The zip
-              here is the same bundle for self-hosting.
-            - **Android**: if `visimed-<version>.apk` is attached below, download
-              it, then allow install from unknown sources on your device. It is
-              debug-signed, so Play Protect may warn — expected for a side-load.
-              If it's missing, the APK build failed — see the run summary.
-
-            API baked in: `${{ steps.cfg.outputs.api_url }}`
-            Demo logins: `medrep1` / `med123` · `pharmrep1` / `pharma123` · `admin` / `admin123`
