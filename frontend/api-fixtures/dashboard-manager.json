@@ -1,0 +1,57 @@
+{
+ "generated_at": "2026-09-07T10:57:52.914504Z",
+ "visits": {
+  "today": 4,
+  "week": 4,
+  "month": 8,
+  "total": 42
+ },
+ "avg_visit_duration": 34.4,
+ "objective_attainment": {
+  "target": 27,
+  "actual": 4,
+  "pct": 14.8
+ },
+ "doctor_coverage": {
+  "covered": 8,
+  "total": 8,
+  "pct": 100.0
+ },
+ "pharmacy_coverage": {
+  "covered": 7,
+  "total": 8,
+  "pct": 87.5
+ },
+ "new_doctors_month": 8,
+ "promo_material": {
+  "total": 63,
+  "breakdown": {
+   "vials": 15,
+   "meters": 12,
+   "readers": 6,
+   "brochure_m": 5,
+   "brochure_patient": 14,
+   "affiche": 11
+  }
+ },
+ "orders": {
+  "month": 23,
+  "by_status": {
+   "pending": 5,
+   "confirmed": 7,
+   "delivered": 9,
+   "cancelled": 2
+  }
+ },
+ "by_visit_type": {
+  "medical": 5,
+  "pharmaceutical": 3
+ },
+ "by_potential": {
+  "A": 3,
+  "B": 2,
+  "C": 1,
+  "KOL": 2
+ },
+ "active_reps": 2
+}

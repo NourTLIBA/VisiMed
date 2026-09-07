@@ -5,34 +5,50 @@ on:
     branches: [main]
     paths:
       - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
-          # Pinned to the version the project's android/ config targets. The
-          # latest stable ships AGP 9, which rejects this project's legacy
-          # build.gradle.kts DSL. Bump this only alongside `flutter upgrade` +
-          # regenerating android/.
-          flutter-version: '3.32.5'
+          flutter-version: '3.32.5'   # see release.yml — latest ships AGP 9
 
       - name: Build Flutter Web
-        working-directory: frontend
         env:
           VISIMED_API_URL: ${{ secrets.VISIMED_API_URL }}
         run: |
+          flutter pub get
+          # Default: the demo API on this same Netlify site. Override with the
+          # VISIMED_API_URL secret to point at the real Django backend.
           flutter build web --release \
-            --dart-define=VISIMED_API_URL="${VISIMED_API_URL:-https://visimed-api.onrender.com/api}"
+            --dart-define=VISIMED_API_URL="${VISIMED_API_URL:-https://visimed.netlify.app/api}"
 
-      - name: Deploy to Netlify
-        uses: netlify/actions/cli@master
-        with:
-          args: deploy --dir=frontend/build/web --prod
+      - name: Deploy to Netlify (web app + demo API function)
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          npx --yes netlify-cli@17 deploy --prod \
+            --dir=build/web \
+            --functions=netlify/functions \
+            --message "CI ${GITHUB_SHA::7}" \
+            --json > deploy.json || { cat deploy.json; exit 1; }
+          URL=$(node -p "require('./deploy.json').url")
+          echo "Deployed: $URL"
+          {
+            echo "### Deployed"
+            echo "- Web app: $URL"
+            echo "- Demo API: $URL/api  (try \`$URL/api/health/\`)"
+            echo ""
+            echo "For the **APK** and **GitHub Pages** builds to use this demo API,"
+            echo "set the repo secret \`VISIMED_API_URL\` to \`$URL/api\` and re-run"
+            echo "them (push a \`v*\` tag / re-run the Pages workflow)."
+          } >> "$GITHUB_STEP_SUMMARY"

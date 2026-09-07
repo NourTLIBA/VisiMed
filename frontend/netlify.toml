@@ -1,3 +1,23 @@
+# Netlify hosts BOTH the Flutter web app and a demo API for VisiMed.
+#
+# The API is a single serverless function (netlify/functions/api.mjs, registered
+# at /api/* via its own `config.path`) that replays JSON captured from the real
+# Django backend (api-fixtures/). It is read-mostly: GET endpoints return the
+# fixtures; login accepts the demo accounts and returns a token; writes are
+# acknowledged but not persisted. Enough to try every screen without standing up
+# the Django service.
+#
+# Swap in the real backend by setting the `VISIMED_API_URL` repo secret to its
+# URL and rebuilding — nothing here needs to change.
+
+[build]
+  publish = "build/web"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Flutter web is a single page; send non-/api paths to it.
 [[redirects]]
   from = "/*"
   to = "/index.html"

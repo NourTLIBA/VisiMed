@@ -1,0 +1,41 @@
+{
+ "count": 4,
+ "alerts": [
+  {
+   "type": "objective_missed",
+   "severity": "high",
+   "title": "Objectif hebdo : medrep1",
+   "detail": "3/15 visites cette semaine",
+   "entity_type": "rep",
+   "entity_id": 3,
+   "ref_date": null
+  },
+  {
+   "type": "objective_missed",
+   "severity": "high",
+   "title": "Objectif hebdo : pharmrep1",
+   "detail": "1/12 visites cette semaine",
+   "entity_type": "rep",
+   "entity_id": 4,
+   "ref_date": null
+  },
+  {
+   "type": "pharmacy_no_order",
+   "severity": "medium",
+   "title": "Pharmacie sans commande : Grossiste SantéPharma",
+   "detail": "Dernière commande : — (seuil 60 j)",
+   "entity_type": "pharmacy",
+   "entity_id": 3,
+   "ref_date": null
+  },
+  {
+   "type": "pharmacy_no_order",
+   "severity": "medium",
+   "title": "Pharmacie sans commande : Pharmacie El Watan",
+   "detail": "Dernière commande : — (seuil 60 j)",
+   "entity_type": "pharmacy",
+   "entity_id": 2,
+   "ref_date": null
+  }
+ ]
+}

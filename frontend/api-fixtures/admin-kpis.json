@@ -1,0 +1,16 @@
+{
+ "total_visits": 42,
+ "total_vials": 100,
+ "total_readers": 41,
+ "by_visit_type": {
+  "medical": 24,
+  "pharmaceutical": 18
+ },
+ "by_potential": {
+  "A": 11,
+  "B": 10,
+  "C": 13,
+  "KOL": 8
+ },
+ "active_reps": 2
+}

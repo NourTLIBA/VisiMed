@@ -1,0 +1,275 @@
+{
+ "doctor": {
+  "id": 7,
+  "name": "Dr. Rachid Khelil",
+  "gender": "M",
+  "specialty": "Neurologue",
+  "structure_type": "Cabinet Privé",
+  "potential": "B",
+  "gco_status": "Pas intéressé(e)",
+  "address": "Rue 37 Hussein Dey",
+  "wilaya": "Alger",
+  "commune": "Hussein Dey",
+  "telephone": "0693892759",
+  "email": "rachid.khelil@clinic.dz",
+  "owner": 3,
+  "created_at": "2026-09-07T11:56:52.671708+01:00",
+  "visit_count": 3,
+  "last_visit_date": "2026-09-07"
+ },
+ "visit_count": 3,
+ "last_visit_date": "2026-09-07",
+ "first_visit_date": "2026-07-23",
+ "products_presented": [
+  "Application GCO",
+  "Bandelettes T-50",
+  "GlucoReader Pro",
+  "Insuline RapidAct",
+  "Kit Éducation Patient"
+ ],
+ "material_given": {
+  "vials": 17,
+  "meters": 5,
+  "readers": 0,
+  "brochure_m": 6,
+  "brochure_patient": 15,
+  "affiche": 5
+ },
+ "orders": [
+  {
+   "id": 11,
+   "visit": "7b4eafe8c1d041c6a92d5695e1b4906d",
+   "doctor": 7,
+   "pharmacy": null,
+   "product": 7,
+   "product_name": "Kit Éducation Patient",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "quantity": 11,
+   "status": "pending",
+   "note": "",
+   "created_at": "2026-09-07T11:56:53.456772+01:00"
+  },
+  {
+   "id": 7,
+   "visit": "0ecf19784e8545dfb24cb0dab11f88c2",
+   "doctor": 7,
+   "pharmacy": null,
+   "product": 4,
+   "product_name": "Lancettes Fine 33G",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "quantity": 9,
+   "status": "cancelled",
+   "note": "",
+   "created_at": "2026-09-07T11:56:53.147216+01:00"
+  }
+ ],
+ "orders_count": 2,
+ "remarks": [
+  {
+   "date": "2026-09-07",
+   "text": "Demande de documentation.",
+   "rep": "medrep1"
+  },
+  {
+   "date": "2026-08-02",
+   "text": "Suivi à faire.",
+   "rep": "medrep1"
+  }
+ ],
+ "objections": [
+  {
+   "date": "2026-07-23",
+   "text": "Préfère la molécule concurrente.",
+   "rep": "medrep1"
+  }
+ ],
+ "next_action": {
+  "date": "2026-09-21",
+  "text": "Rappeler avec une étude clinique.",
+  "logged_on": "2026-09-07"
+ },
+ "visits": [
+  {
+   "id": "d2a00e58132f4730900a8d9243b1c88b",
+   "date": "2026-09-07",
+   "created_at": "2026-09-07T11:56:53.577536+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 7,
+   "doctor_name": "Dr. Rachid Khelil",
+   "pharmacy": null,
+   "target_name": "Dr. Rachid Khelil",
+   "gender": "M",
+   "specialty": "Neurologue",
+   "structure_type": "Cabinet Privé",
+   "potential": "B",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 37 Hussein Dey",
+   "wilaya": "Alger",
+   "commune": "Hussein Dey",
+   "telephone": "0693892759",
+   "email": "rachid.khelil@clinic.dz",
+   "patient_load": "0-15",
+   "duration_minutes": 20,
+   "qty_reader": 0,
+   "qty_vials": 0,
+   "qty_meters": 0,
+   "qty_brochure_m": 1,
+   "qty_brochure_patient": 2,
+   "qty_affiche": 1,
+   "photo_url": null,
+   "comment": "Demande de documentation.",
+   "objections": "",
+   "next_action": "Rappeler avec une étude clinique.",
+   "next_action_date": "2026-09-21",
+   "presented_products": [
+    {
+     "id": 47,
+     "product": 2,
+     "product_name": "GlucoReader Pro",
+     "samples_qty": 2
+    },
+    {
+     "id": 48,
+     "product": 7,
+     "product_name": "Kit Éducation Patient",
+     "samples_qty": 0
+    }
+   ],
+   "prescriptions": []
+  },
+  {
+   "id": "7b4eafe8c1d041c6a92d5695e1b4906d",
+   "date": "2026-08-02",
+   "created_at": "2026-09-07T11:56:53.427218+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 7,
+   "doctor_name": "Dr. Rachid Khelil",
+   "pharmacy": null,
+   "target_name": "Dr. Rachid Khelil",
+   "gender": "M",
+   "specialty": "Neurologue",
+   "structure_type": "Cabinet Privé",
+   "potential": "B",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 37 Hussein Dey",
+   "wilaya": "Alger",
+   "commune": "Hussein Dey",
+   "telephone": "0693892759",
+   "email": "rachid.khelil@clinic.dz",
+   "patient_load": "16-30",
+   "duration_minutes": 20,
+   "qty_reader": 0,
+   "qty_vials": 10,
+   "qty_meters": 4,
+   "qty_brochure_m": 1,
+   "qty_brochure_patient": 9,
+   "qty_affiche": 2,
+   "photo_url": null,
+   "comment": "Suivi à faire.",
+   "objections": "",
+   "next_action": "Apporter des échantillons.",
+   "next_action_date": "2026-09-09",
+   "presented_products": [
+    {
+     "id": 40,
+     "product": 3,
+     "product_name": "Bandelettes T-50",
+     "samples_qty": 3
+    },
+    {
+     "id": 39,
+     "product": 5,
+     "product_name": "Insuline RapidAct",
+     "samples_qty": 0
+    }
+   ],
+   "prescriptions": [
+    {
+     "id": 11,
+     "visit": "7b4eafe8c1d041c6a92d5695e1b4906d",
+     "doctor": 7,
+     "pharmacy": null,
+     "product": 7,
+     "product_name": "Kit Éducation Patient",
+     "rep": 3,
+     "rep_username": "medrep1",
+     "quantity": 11,
+     "status": "pending",
+     "note": "",
+     "created_at": "2026-09-07T11:56:53.456772+01:00"
+    }
+   ]
+  },
+  {
+   "id": "0ecf19784e8545dfb24cb0dab11f88c2",
+   "date": "2026-07-23",
+   "created_at": "2026-09-07T11:56:53.117283+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 7,
+   "doctor_name": "Dr. Rachid Khelil",
+   "pharmacy": null,
+   "target_name": "Dr. Rachid Khelil",
+   "gender": "M",
+   "specialty": "Neurologue",
+   "structure_type": "Cabinet Privé",
+   "potential": "B",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 37 Hussein Dey",
+   "wilaya": "Alger",
+   "commune": "Hussein Dey",
+   "telephone": "0693892759",
+   "email": "rachid.khelil@clinic.dz",
+   "patient_load": "30+",
+   "duration_minutes": 20,
+   "qty_reader": 0,
+   "qty_vials": 7,
+   "qty_meters": 1,
+   "qty_brochure_m": 4,
+   "qty_brochure_patient": 4,
+   "qty_affiche": 2,
+   "photo_url": null,
+   "comment": "",
+   "objections": "Préfère la molécule concurrente.",
+   "next_action": "Programmer une réunion staff.",
+   "next_action_date": null,
+   "presented_products": [
+    {
+     "id": 21,
+     "product": 7,
+     "product_name": "Kit Éducation Patient",
+     "samples_qty": 0
+    },
+    {
+     "id": 22,
+     "product": 8,
+     "product_name": "Application GCO",
+     "samples_qty": 3
+    }
+   ],
+   "prescriptions": [
+    {
+     "id": 7,
+     "visit": "0ecf19784e8545dfb24cb0dab11f88c2",
+     "doctor": 7,
+     "pharmacy": null,
+     "product": 4,
+     "product_name": "Lancettes Fine 33G",
+     "rep": 3,
+     "rep_username": "medrep1",
+     "quantity": 9,
+     "status": "cancelled",
+     "note": "",
+     "created_at": "2026-09-07T11:56:53.147216+01:00"
+    }
+   ]
+  }
+ ]
+}

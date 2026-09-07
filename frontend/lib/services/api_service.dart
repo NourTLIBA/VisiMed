@@ -15,7 +15,11 @@ class ApiService {
       : baseUrl = baseUrl ??
             const String.fromEnvironment(
               'VISIMED_API_URL',
-              defaultValue: 'https://visimed-api.onrender.com/api',
+              // Netlify serves a demo API (fixture replay) at /api on the same
+              // site as the web build; the APK/Pages builds bake in the
+              // absolute URL. Override with --dart-define / the repo secret to
+              // point at the real Django backend.
+              defaultValue: 'https://visimed.netlify.app/api',
             );
 
   final String baseUrl;

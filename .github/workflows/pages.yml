@@ -45,7 +45,7 @@ jobs:
           flutter pub get
           flutter build web --release \
             --base-href "/VisiMed/" \
-            --dart-define=VISIMED_API_URL="${VISIMED_API_URL:-https://visimed-api.onrender.com/api}"
+            --dart-define=VISIMED_API_URL="${VISIMED_API_URL:-https://visimed.netlify.app/api}"
           touch build/web/.nojekyll
           cp build/web/index.html build/web/404.html   # deep-link fallback
 

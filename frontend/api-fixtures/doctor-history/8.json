@@ -1,0 +1,284 @@
+{
+ "doctor": {
+  "id": 8,
+  "name": "Dr. Leila Bouzid",
+  "gender": "F",
+  "specialty": "Gynécologue",
+  "structure_type": "CHU",
+  "potential": "C",
+  "gco_status": "Pas intéressé(e)",
+  "address": "Rue 21 Boufarik",
+  "wilaya": "Blida",
+  "commune": "Boufarik",
+  "telephone": "0649751312",
+  "email": "leila.bouzid@clinic.dz",
+  "owner": 3,
+  "created_at": "2026-09-07T11:56:52.686470+01:00",
+  "visit_count": 3,
+  "last_visit_date": "2026-08-16"
+ },
+ "visit_count": 3,
+ "last_visit_date": "2026-08-16",
+ "first_visit_date": "2026-07-29",
+ "products_presented": [
+  "Application GCO",
+  "GlucoReader Pro",
+  "Kit Éducation Patient",
+  "Lancettes Fine 33G"
+ ],
+ "material_given": {
+  "vials": 8,
+  "meters": 5,
+  "readers": 0,
+  "brochure_m": 8,
+  "brochure_patient": 7,
+  "affiche": 2
+ },
+ "orders": [
+  {
+   "id": 12,
+   "visit": "ea729b8f46bf495e81c8d12b157aa324",
+   "doctor": 8,
+   "pharmacy": null,
+   "product": 3,
+   "product_name": "Bandelettes T-50",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "quantity": 19,
+   "status": "confirmed",
+   "note": "",
+   "created_at": "2026-09-07T11:56:53.505240+01:00"
+  },
+  {
+   "id": 10,
+   "visit": "76e955776ce74985be3acbc233025b3c",
+   "doctor": 8,
+   "pharmacy": null,
+   "product": 7,
+   "product_name": "Kit Éducation Patient",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "quantity": 19,
+   "status": "delivered",
+   "note": "",
+   "created_at": "2026-09-07T11:56:53.361482+01:00"
+  }
+ ],
+ "orders_count": 2,
+ "remarks": [
+  {
+   "date": "2026-08-16",
+   "text": "Bon accueil.",
+   "rep": "medrep1"
+  },
+  {
+   "date": "2026-07-29",
+   "text": "Demande de documentation.",
+   "rep": "medrep1"
+  }
+ ],
+ "objections": [
+  {
+   "date": "2026-08-16",
+   "text": "Pas de budget ce trimestre.",
+   "rep": "medrep1"
+  },
+  {
+   "date": "2026-08-05",
+   "text": "Prix jugé élevé.",
+   "rep": "medrep1"
+  },
+  {
+   "date": "2026-07-29",
+   "text": "Manque de données locales.",
+   "rep": "medrep1"
+  }
+ ],
+ "next_action": {
+  "date": null,
+  "text": "Inviter au symposium régional.",
+  "logged_on": "2026-08-16"
+ },
+ "visits": [
+  {
+   "id": "ea729b8f46bf495e81c8d12b157aa324",
+   "date": "2026-08-16",
+   "created_at": "2026-09-07T11:56:53.470353+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 8,
+   "doctor_name": "Dr. Leila Bouzid",
+   "pharmacy": null,
+   "target_name": "Dr. Leila Bouzid",
+   "gender": "F",
+   "specialty": "Gynécologue",
+   "structure_type": "CHU",
+   "potential": "C",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 21 Boufarik",
+   "wilaya": "Blida",
+   "commune": "Boufarik",
+   "telephone": "0649751312",
+   "email": "leila.bouzid@clinic.dz",
+   "patient_load": "0-15",
+   "duration_minutes": 20,
+   "qty_reader": 0,
+   "qty_vials": 3,
+   "qty_meters": 1,
+   "qty_brochure_m": 3,
+   "qty_brochure_patient": 3,
+   "qty_affiche": 0,
+   "photo_url": null,
+   "comment": "Bon accueil.",
+   "objections": "Pas de budget ce trimestre.",
+   "next_action": "Inviter au symposium régional.",
+   "next_action_date": null,
+   "presented_products": [
+    {
+     "id": 42,
+     "product": 4,
+     "product_name": "Lancettes Fine 33G",
+     "samples_qty": 0
+    },
+    {
+     "id": 41,
+     "product": 7,
+     "product_name": "Kit Éducation Patient",
+     "samples_qty": 0
+    }
+   ],
+   "prescriptions": [
+    {
+     "id": 12,
+     "visit": "ea729b8f46bf495e81c8d12b157aa324",
+     "doctor": 8,
+     "pharmacy": null,
+     "product": 3,
+     "product_name": "Bandelettes T-50",
+     "rep": 3,
+     "rep_username": "medrep1",
+     "quantity": 19,
+     "status": "confirmed",
+     "note": "",
+     "created_at": "2026-09-07T11:56:53.505240+01:00"
+    }
+   ]
+  },
+  {
+   "id": "76e955776ce74985be3acbc233025b3c",
+   "date": "2026-08-05",
+   "created_at": "2026-09-07T11:56:53.334652+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 8,
+   "doctor_name": "Dr. Leila Bouzid",
+   "pharmacy": null,
+   "target_name": "Dr. Leila Bouzid",
+   "gender": "F",
+   "specialty": "Gynécologue",
+   "structure_type": "CHU",
+   "potential": "C",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 21 Boufarik",
+   "wilaya": "Blida",
+   "commune": "Boufarik",
+   "telephone": "0649751312",
+   "email": "leila.bouzid@clinic.dz",
+   "patient_load": "30+",
+   "duration_minutes": 30,
+   "qty_reader": 0,
+   "qty_vials": 4,
+   "qty_meters": 0,
+   "qty_brochure_m": 4,
+   "qty_brochure_patient": 2,
+   "qty_affiche": 0,
+   "photo_url": null,
+   "comment": "",
+   "objections": "Prix jugé élevé.",
+   "next_action": "Apporter des échantillons.",
+   "next_action_date": "2026-09-11",
+   "presented_products": [
+    {
+     "id": 34,
+     "product": 2,
+     "product_name": "GlucoReader Pro",
+     "samples_qty": 2
+    },
+    {
+     "id": 33,
+     "product": 8,
+     "product_name": "Application GCO",
+     "samples_qty": 3
+    }
+   ],
+   "prescriptions": [
+    {
+     "id": 10,
+     "visit": "76e955776ce74985be3acbc233025b3c",
+     "doctor": 8,
+     "pharmacy": null,
+     "product": 7,
+     "product_name": "Kit Éducation Patient",
+     "rep": 3,
+     "rep_username": "medrep1",
+     "quantity": 19,
+     "status": "delivered",
+     "note": "",
+     "created_at": "2026-09-07T11:56:53.361482+01:00"
+    }
+   ]
+  },
+  {
+   "id": "de7d647bbcd246f19eb5b0351555b195",
+   "date": "2026-07-29",
+   "created_at": "2026-09-07T11:56:53.087423+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 8,
+   "doctor_name": "Dr. Leila Bouzid",
+   "pharmacy": null,
+   "target_name": "Dr. Leila Bouzid",
+   "gender": "F",
+   "specialty": "Gynécologue",
+   "structure_type": "CHU",
+   "potential": "C",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 21 Boufarik",
+   "wilaya": "Blida",
+   "commune": "Boufarik",
+   "telephone": "0649751312",
+   "email": "leila.bouzid@clinic.dz",
+   "patient_load": "0-15",
+   "duration_minutes": 30,
+   "qty_reader": 0,
+   "qty_vials": 1,
+   "qty_meters": 4,
+   "qty_brochure_m": 1,
+   "qty_brochure_patient": 2,
+   "qty_affiche": 2,
+   "photo_url": null,
+   "comment": "Demande de documentation.",
+   "objections": "Manque de données locales.",
+   "next_action": "Rappeler avec une étude clinique.",
+   "next_action_date": "2026-09-08",
+   "presented_products": [
+    {
+     "id": 19,
+     "product": 2,
+     "product_name": "GlucoReader Pro",
+     "samples_qty": 3
+    },
+    {
+     "id": 20,
+     "product": 8,
+     "product_name": "Application GCO",
+     "samples_qty": 3
+    }
+   ],
+   "prescriptions": []
+  }
+ ]
+}

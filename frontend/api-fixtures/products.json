@@ -1,0 +1,55 @@
+{
+ "count": 8,
+ "next": null,
+ "previous": null,
+ "results": [
+  {
+   "id": 8,
+   "name": "Application GCO",
+   "category": "Service",
+   "is_active": true
+  },
+  {
+   "id": 3,
+   "name": "Bandelettes T-50",
+   "category": "Consommable",
+   "is_active": true
+  },
+  {
+   "id": 2,
+   "name": "GlucoReader Pro",
+   "category": "Lecteur",
+   "is_active": true
+  },
+  {
+   "id": 1,
+   "name": "GlucoReader X1",
+   "category": "Lecteur",
+   "is_active": true
+  },
+  {
+   "id": 6,
+   "name": "Insuline BasalGlar",
+   "category": "Traitement",
+   "is_active": true
+  },
+  {
+   "id": 5,
+   "name": "Insuline RapidAct",
+   "category": "Traitement",
+   "is_active": true
+  },
+  {
+   "id": 7,
+   "name": "Kit Éducation Patient",
+   "category": "Support",
+   "is_active": true
+  },
+  {
+   "id": 4,
+   "name": "Lancettes Fine 33G",
+   "category": "Consommable",
+   "is_active": true
+  }
+ ]
+}

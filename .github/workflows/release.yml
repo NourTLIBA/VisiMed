@@ -17,7 +17,7 @@ on:
     inputs:
       api_url:
         description: Backend API base URL to bake in
-        default: https://visimed-api.onrender.com/api
+        default: https://visimed.netlify.app/api
         required: false
 
 permissions:
@@ -66,7 +66,7 @@ jobs:
         run: |
           URL="${{ github.event.inputs.api_url }}"
           URL="${URL:-${{ secrets.VISIMED_API_URL }}}"
-          URL="${URL:-https://visimed-api.onrender.com/api}"
+          URL="${URL:-https://visimed.netlify.app/api}"
           echo "api_url=$URL" >> "$GITHUB_OUTPUT"
           echo "version=$(grep -m1 '^version:' pubspec.yaml | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 

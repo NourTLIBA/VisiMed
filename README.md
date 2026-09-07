@@ -16,13 +16,17 @@ statistics.
 
 ### Web — works on any device, nothing to install
 
-Open **https://nourtliba.github.io/VisiMed/** (GitHub Pages) or the Netlify
-site. On a phone, *Add to home screen* for an app-like PWA install.
+Open the Netlify site (`https://visimed.netlify.app`) or GitHub Pages
+(`https://nourtliba.github.io/VisiMed/`). On a phone, *Add to home screen* for
+an app-like PWA install.
 
-GitHub Pages is static-only, so the Pages build is the **front end only** — a
-Django API can't run on GitHub. It's fully usable via the login screen's
-**Accès démo** buttons (bundled sample data, no network). Real login and the
-analytics screens need the API deployed to Render (`backend/DEPLOY.md`).
+**No Django server needed to try it.** The Netlify site also serves a **demo
+API** at `/api` — a serverless function (`frontend/netlify/functions/api.mjs`)
+that replays JSON captured from the real backend (`frontend/api-fixtures/`).
+Login accepts the demo accounts; every screen works; writes aren't persisted.
+The APK and GitHub Pages builds point at `https://visimed.netlify.app/api` by
+default. To use the **real** backend instead, deploy it (`backend/DEPLOY.md`)
+and set the `VISIMED_API_URL` repo secret to its URL.
 
 ### Android
 
@@ -107,18 +111,21 @@ Both halves deploy from `main` via GitHub Actions.
 
 | | Host | Workflow | Trigger |
 |---|---|---|---|
-| Backend | Render (`render.yaml` Blueprint + free Postgres) | `deploy-backend.yml` | push to `main` under `backend/**` → test → Render deploy hook |
-| Frontend | **GitHub Pages** (`nourtliba.github.io/VisiMed/`) | `pages.yml` | push to `main` under `frontend/**` |
-| Frontend | Netlify | `deploy-frontend.yml` | push to `main` under `frontend/**` |
-| Release builds | GitHub Releases | `release.yml` | push a `v*` tag or run manually |
+| Web app **+ demo API** | Netlify (`deploy-frontend.yml`) — Flutter web at `/`, `netlify/functions/api.mjs` at `/api` | push to `main` under `frontend/**` |
+| Web app | GitHub Pages (`nourtliba.github.io/VisiMed/`) — `pages.yml` | push to `main` under `frontend/**` |
+| Release builds | GitHub Releases (`release.yml`) — APK + web zip | push a `v*` tag or run manually |
+| Real backend (optional) | Render (`render.yaml` Blueprint + free Postgres) — `deploy-backend.yml` | push to `main` under `backend/**` → test → Render deploy hook |
 
-GitHub Pages is static — it hosts the Flutter web app only; the Django API must
-live on Render (or another server). One-time: repo **Settings → Pages → Source →
-GitHub Actions**.
+The **demo API** on Netlify means the app works with no Django server. To run
+the real backend, deploy it to Render (`backend/DEPLOY.md`) and set the
+`VISIMED_API_URL` repo secret to its URL — the APK / Pages builds pick it up on
+their next run. One-time for Pages: repo **Settings → Pages → Source → GitHub
+Actions**.
 
 One-time setup and every environment variable are documented in
 **[backend/DEPLOY.md](backend/DEPLOY.md)**. Repo secrets: `VISIMED_API_URL`
-(optional — defaults to the Render URL), `RENDER_DEPLOY_HOOK_URL`,
+(optional — set to a real backend URL to bypass the demo API),
+`RENDER_DEPLOY_HOOK_URL`,
 `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`.
 
 ### `DEMO_MOCK`
@@ -141,6 +148,8 @@ frontend/            Flutter app
   lib/theme/          app_theme.dart + deco.dart — the "warm clinical" design system
   lib/widgets/        filter_bar.dart, …
   tool/gen_logo.py    regenerates every icon from assets/images/logo.svg
+  netlify/functions/api.mjs   the demo API (replays api-fixtures/)
+  api-fixtures/       JSON captured from the real backend; tools/capture_fixtures.sh
   CLAUDE.md           frontend architecture + design system — read before UI work
 backend/
   visimed/            the app: models, views, serializers, permissions

@@ -1,0 +1,102 @@
+{
+ "by_wilaya": [
+  {
+   "wilaya": "Alger",
+   "count": 12,
+   "reps": 1,
+   "last_visit": "2026-09-07",
+   "kol": 3,
+   "doctors": 4,
+   "pharmacies": 0
+  },
+  {
+   "wilaya": "Blida",
+   "count": 12,
+   "reps": 1,
+   "last_visit": "2026-09-07",
+   "kol": 5,
+   "doctors": 4,
+   "pharmacies": 0
+  },
+  {
+   "wilaya": "Oran",
+   "count": 10,
+   "reps": 1,
+   "last_visit": "2026-09-07",
+   "kol": 0,
+   "doctors": 0,
+   "pharmacies": 4
+  },
+  {
+   "wilaya": "Mostaganem",
+   "count": 8,
+   "reps": 1,
+   "last_visit": "2026-08-28",
+   "kol": 0,
+   "doctors": 0,
+   "pharmacies": 3
+  }
+ ],
+ "by_commune": [
+  {
+   "wilaya": "Alger",
+   "commune": "Hussein Dey",
+   "count": 9,
+   "last_visit": "2026-09-07"
+  },
+  {
+   "wilaya": "Blida",
+   "commune": "Larbaa",
+   "count": 5,
+   "last_visit": "2026-09-06"
+  },
+  {
+   "wilaya": "Oran",
+   "commune": "Ain Turk",
+   "count": 5,
+   "last_visit": "2026-09-07"
+  },
+  {
+   "wilaya": "Oran",
+   "commune": "Es Sénia",
+   "count": 5,
+   "last_visit": "2026-09-05"
+  },
+  {
+   "wilaya": "Blida",
+   "commune": "Blida",
+   "count": 4,
+   "last_visit": "2026-09-07"
+  },
+  {
+   "wilaya": "Mostaganem",
+   "commune": "Sayada",
+   "count": 4,
+   "last_visit": "2026-08-28"
+  },
+  {
+   "wilaya": "Alger",
+   "commune": "Bir Mourad Raïs",
+   "count": 3,
+   "last_visit": "2026-08-10"
+  },
+  {
+   "wilaya": "Blida",
+   "commune": "Boufarik",
+   "count": 3,
+   "last_visit": "2026-08-16"
+  },
+  {
+   "wilaya": "Mostaganem",
+   "commune": "Mazagran",
+   "count": 3,
+   "last_visit": "2026-08-16"
+  },
+  {
+   "wilaya": "Mostaganem",
+   "commune": "Khadra",
+   "count": 1,
+   "last_visit": "2026-08-27"
+  }
+ ]
+}

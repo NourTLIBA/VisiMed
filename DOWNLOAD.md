@@ -2,20 +2,20 @@
 
 ## Web (any device — recommended)
 
-- **GitHub Pages:** https://nourtliba.github.io/VisiMed/  *(fully hosted on
-  GitHub — front end only; use the "Accès démo" buttons, no backend needed)*
 - **Netlify:** https://visimed.netlify.app
+- **GitHub Pages:** https://nourtliba.github.io/VisiMed/
 
 Works in any modern browser. On a phone, use "Add to home screen" for an
 app-like install (it's a PWA). Nothing to download.
 
-> **About the backend.** GitHub Pages is static-only — a Django API can't run
-> on GitHub. The Pages site is fully usable through the login screen's **Accès
-> démo** buttons (bundled sample data, zero network). *Real* login and the
-> analytics screens (Statistiques / Dashboard / Alerts / Leaderboard / map) need
-> a live API — deploy the backend to Render per [backend/DEPLOY.md](backend/DEPLOY.md)
-> and set the `VISIMED_API_URL` repo secret; the Pages and Netlify builds then
-> pick it up.
+> **No server needed.** The Netlify site serves a **demo API** at `/api` —
+> a serverless function that replays real backend responses. Login with any of
+> the demo accounts below (any password); every screen works. It's read-only —
+> a new visit you log isn't kept.
+>
+> To use the **real** backend instead: deploy it per
+> [backend/DEPLOY.md](backend/DEPLOY.md) and set the `VISIMED_API_URL` repo
+> secret to its URL — the APK / Pages builds pick it up on their next run.
 
 ## Android
 

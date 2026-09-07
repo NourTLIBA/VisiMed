@@ -1,0 +1,582 @@
+[
+ {
+  "code_commune": "C-1",
+  "nom_commune": "Adrar-Ville",
+  "nom_wilaya": "Adrar"
+ },
+ {
+  "code_commune": "C-6",
+  "nom_commune": "Alger-Centre",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-4",
+  "nom_commune": "Aïn Benian",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-5",
+  "nom_commune": "Aïn Taya",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-7",
+  "nom_commune": "Bab El Oued",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-8",
+  "nom_commune": "Bab Ezzouar",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-9",
+  "nom_commune": "Baba Hassen",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-10",
+  "nom_commune": "Bachdjerrah",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-11",
+  "nom_commune": "Baraki",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-12",
+  "nom_commune": "Belouizdad",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-13",
+  "nom_commune": "Ben Aknoun",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-14",
+  "nom_commune": "Beni Messous",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-15",
+  "nom_commune": "Bir Mourad Raïs",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-16",
+  "nom_commune": "Birkhadem",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-17",
+  "nom_commune": "Birtouta",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-18",
+  "nom_commune": "Bologhine",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-19",
+  "nom_commune": "Bordj El Bahri",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-20",
+  "nom_commune": "Bordj El Kiffan",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-21",
+  "nom_commune": "Bourouba",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-22",
+  "nom_commune": "Bouzareah",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-23",
+  "nom_commune": "Casbah",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-24",
+  "nom_commune": "Cheraga",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-25",
+  "nom_commune": "Dar El Beïda",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-26",
+  "nom_commune": "Dely Ibrahim",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-27",
+  "nom_commune": "Djasr Kasentina",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-28",
+  "nom_commune": "Douera",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-29",
+  "nom_commune": "Draria",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-30",
+  "nom_commune": "El Achour",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-31",
+  "nom_commune": "El Biar",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-32",
+  "nom_commune": "El Harrach",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-33",
+  "nom_commune": "El Madania",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-34",
+  "nom_commune": "El Magharia",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-35",
+  "nom_commune": "El Marsa",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-36",
+  "nom_commune": "El Mouradia",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-37",
+  "nom_commune": "H'raoua",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-38",
+  "nom_commune": "Hammamet",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-39",
+  "nom_commune": "Hussein Dey",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-40",
+  "nom_commune": "Hydra",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-41",
+  "nom_commune": "Khraicia",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-42",
+  "nom_commune": "Kouba",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-43",
+  "nom_commune": "Les Eucalyptus",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-44",
+  "nom_commune": "Mahelma",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-45",
+  "nom_commune": "Mohammadia",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-46",
+  "nom_commune": "Oued Koriche",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-47",
+  "nom_commune": "Oued Smar",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-48",
+  "nom_commune": "Ouled Chebel",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-49",
+  "nom_commune": "Ouled Fayet",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-50",
+  "nom_commune": "Rahmania",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-51",
+  "nom_commune": "Raïs Hamidou",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-52",
+  "nom_commune": "Reghaïa",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-53",
+  "nom_commune": "Rouïba",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-54",
+  "nom_commune": "Saoula",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-55",
+  "nom_commune": "Sidi M'Hamed",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-56",
+  "nom_commune": "Sidi Moussa",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-57",
+  "nom_commune": "Souidania",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-58",
+  "nom_commune": "Staoueli",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-59",
+  "nom_commune": "Tessala El Merdja",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-60",
+  "nom_commune": "Zeralda",
+  "nom_wilaya": "Alger"
+ },
+ {
+  "code_commune": "C-61",
+  "nom_commune": "Annaba-Ville",
+  "nom_wilaya": "Annaba"
+ },
+ {
+  "code_commune": "C-2",
+  "nom_commune": "Aïn Defla-Ville",
+  "nom_wilaya": "Aïn Defla"
+ },
+ {
+  "code_commune": "C-3",
+  "nom_commune": "Aïn Témouchent-Ville",
+  "nom_wilaya": "Aïn Témouchent"
+ },
+ {
+  "code_commune": "C-62",
+  "nom_commune": "Batna-Ville",
+  "nom_wilaya": "Batna"
+ },
+ {
+  "code_commune": "C-115",
+  "nom_commune": "Akbou",
+  "nom_wilaya": "Bejaïa"
+ },
+ {
+  "code_commune": "C-116",
+  "nom_commune": "Amizour",
+  "nom_wilaya": "Bejaïa"
+ },
+ {
+  "code_commune": "C-64",
+  "nom_commune": "Bejaïa-Ville",
+  "nom_wilaya": "Bejaïa"
+ },
+ {
+  "code_commune": "C-66",
+  "nom_commune": "Biskra-Ville",
+  "nom_wilaya": "Biskra"
+ },
+ {
+  "code_commune": "C-67",
+  "nom_commune": "Blida-Ville",
+  "nom_wilaya": "Blida"
+ },
+ {
+  "code_commune": "C-68",
+  "nom_commune": "Bordj Badji Mokhtar-Ville",
+  "nom_wilaya": "Bordj Badji Mokhtar"
+ },
+ {
+  "code_commune": "C-69",
+  "nom_commune": "Bordj Bou Arreridj-Ville",
+  "nom_wilaya": "Bordj Bou Arreridj"
+ },
+ {
+  "code_commune": "C-70",
+  "nom_commune": "Bouira-Ville",
+  "nom_wilaya": "Bouira"
+ },
+ {
+  "code_commune": "C-71",
+  "nom_commune": "Boumerdès-Ville",
+  "nom_wilaya": "Boumerdès"
+ },
+ {
+  "code_commune": "C-63",
+  "nom_commune": "Béchar-Ville",
+  "nom_wilaya": "Béchar"
+ },
+ {
+  "code_commune": "C-65",
+  "nom_commune": "Béni Abbès-Ville",
+  "nom_wilaya": "Béni Abbès"
+ },
+ {
+  "code_commune": "C-72",
+  "nom_commune": "Chlef-Ville",
+  "nom_wilaya": "Chlef"
+ },
+ {
+  "code_commune": "C-73",
+  "nom_commune": "Constantine-Ville",
+  "nom_wilaya": "Constantine"
+ },
+ {
+  "code_commune": "C-74",
+  "nom_commune": "Djanet-Ville",
+  "nom_wilaya": "Djanet"
+ },
+ {
+  "code_commune": "C-75",
+  "nom_commune": "Djelfa-Ville",
+  "nom_wilaya": "Djelfa"
+ },
+ {
+  "code_commune": "C-76",
+  "nom_commune": "El Bayadh-Ville",
+  "nom_wilaya": "El Bayadh"
+ },
+ {
+  "code_commune": "C-77",
+  "nom_commune": "El M'Ghair-Ville",
+  "nom_wilaya": "El M'Ghair"
+ },
+ {
+  "code_commune": "C-78",
+  "nom_commune": "El Meniaa-Ville",
+  "nom_wilaya": "El Meniaa"
+ },
+ {
+  "code_commune": "C-79",
+  "nom_commune": "El Oued-Ville",
+  "nom_wilaya": "El Oued"
+ },
+ {
+  "code_commune": "C-80",
+  "nom_commune": "El Tarf-Ville",
+  "nom_wilaya": "El Tarf"
+ },
+ {
+  "code_commune": "C-81",
+  "nom_commune": "Ghardaia-Ville",
+  "nom_wilaya": "Ghardaia"
+ },
+ {
+  "code_commune": "C-82",
+  "nom_commune": "Guelma-Ville",
+  "nom_wilaya": "Guelma"
+ },
+ {
+  "code_commune": "C-83",
+  "nom_commune": "Illizi-Ville",
+  "nom_wilaya": "Illizi"
+ },
+ {
+  "code_commune": "C-84",
+  "nom_commune": "In Guezzam-Ville",
+  "nom_wilaya": "In Guezzam"
+ },
+ {
+  "code_commune": "C-85",
+  "nom_commune": "In Salah-Ville",
+  "nom_wilaya": "In Salah"
+ },
+ {
+  "code_commune": "C-86",
+  "nom_commune": "Jijel-Ville",
+  "nom_wilaya": "Jijel"
+ },
+ {
+  "code_commune": "C-87",
+  "nom_commune": "Khenchela-Ville",
+  "nom_wilaya": "Khenchela"
+ },
+ {
+  "code_commune": "C-88",
+  "nom_commune": "Laghouat-Ville",
+  "nom_wilaya": "Laghouat"
+ },
+ {
+  "code_commune": "C-89",
+  "nom_commune": "M'Sila-Ville",
+  "nom_wilaya": "M'Sila"
+ },
+ {
+  "code_commune": "C-90",
+  "nom_commune": "Mascara-Ville",
+  "nom_wilaya": "Mascara"
+ },
+ {
+  "code_commune": "C-92",
+  "nom_commune": "Mila-Ville",
+  "nom_wilaya": "Mila"
+ },
+ {
+  "code_commune": "C-93",
+  "nom_commune": "Mostaganem-Ville",
+  "nom_wilaya": "Mostaganem"
+ },
+ {
+  "code_commune": "C-91",
+  "nom_commune": "Médéa-Ville",
+  "nom_wilaya": "Médéa"
+ },
+ {
+  "code_commune": "C-94",
+  "nom_commune": "Naâma-Ville",
+  "nom_wilaya": "Naâma"
+ },
+ {
+  "code_commune": "C-95",
+  "nom_commune": "Oran-Ville",
+  "nom_wilaya": "Oran"
+ },
+ {
+  "code_commune": "C-96",
+  "nom_commune": "Ouargla-Ville",
+  "nom_wilaya": "Ouargla"
+ },
+ {
+  "code_commune": "C-97",
+  "nom_commune": "Ouled Djellal-Ville",
+  "nom_wilaya": "Ouled Djellal"
+ },
+ {
+  "code_commune": "C-98",
+  "nom_commune": "Oum El Bouaghi-Ville",
+  "nom_wilaya": "Oum El Bouaghi"
+ },
+ {
+  "code_commune": "C-99",
+  "nom_commune": "Relizane-Ville",
+  "nom_wilaya": "Relizane"
+ },
+ {
+  "code_commune": "C-100",
+  "nom_commune": "Saïda-Ville",
+  "nom_wilaya": "Saïda"
+ },
+ {
+  "code_commune": "C-102",
+  "nom_commune": "Sidi Bel Abbès-Ville",
+  "nom_wilaya": "Sidi Bel Abbès"
+ },
+ {
+  "code_commune": "C-103",
+  "nom_commune": "Skikda-Ville",
+  "nom_wilaya": "Skikda"
+ },
+ {
+  "code_commune": "C-104",
+  "nom_commune": "Souk Ahras-Ville",
+  "nom_wilaya": "Souk Ahras"
+ },
+ {
+  "code_commune": "C-101",
+  "nom_commune": "Sétif-Ville",
+  "nom_wilaya": "Sétif"
+ },
+ {
+  "code_commune": "C-105",
+  "nom_commune": "Tamanrasset-Ville",
+  "nom_wilaya": "Tamanrasset"
+ },
+ {
+  "code_commune": "C-106",
+  "nom_commune": "Tebessa-Ville",
+  "nom_wilaya": "Tebessa"
+ },
+ {
+  "code_commune": "C-107",
+  "nom_commune": "Tiaret-Ville",
+  "nom_wilaya": "Tiaret"
+ },
+ {
+  "code_commune": "C-108",
+  "nom_commune": "Timimoun-Ville",
+  "nom_wilaya": "Timimoun"
+ },
+ {
+  "code_commune": "C-109",
+  "nom_commune": "Tindouf-Ville",
+  "nom_wilaya": "Tindouf"
+ },
+ {
+  "code_commune": "C-110",
+  "nom_commune": "Tipaza-Ville",
+  "nom_wilaya": "Tipaza"
+ },
+ {
+  "code_commune": "C-111",
+  "nom_commune": "Tissemsilt-Ville",
+  "nom_wilaya": "Tissemsilt"
+ },
+ {
+  "code_commune": "C-112",
+  "nom_commune": "Tizi Ouzou-Ville",
+  "nom_wilaya": "Tizi Ouzou"
+ },
+ {
+  "code_commune": "C-113",
+  "nom_commune": "Tlemcen-Ville",
+  "nom_wilaya": "Tlemcen"
+ },
+ {
+  "code_commune": "C-114",
+  "nom_commune": "Touggourt-Ville",
+  "nom_wilaya": "Touggourt"
+ }
+]

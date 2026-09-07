@@ -1,0 +1,18 @@
+{
+ "rep": 3,
+ "username": "medrep1",
+ "role": "med_rep",
+ "territory": "Alger,Blida",
+ "visits_today": 3,
+ "visits_week": 3,
+ "visits_month": 5,
+ "objective": {
+  "target": 15,
+  "actual": 3,
+  "pct": 20.0
+ },
+ "coverage_pct": 100.0,
+ "orders_month": 13,
+ "new_doctors_month": 8,
+ "avg_duration": 41.0
+}

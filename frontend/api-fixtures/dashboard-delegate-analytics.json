@@ -1,0 +1,105 @@
+{
+ "rep": {
+  "id": 3,
+  "username": "medrep1",
+  "role": "med_rep"
+ },
+ "range": {
+  "from": "2026-06-09",
+  "to": "2026-09-07"
+ },
+ "totals": {
+  "visits": 24,
+  "doctors": 8,
+  "pharmacies": 0,
+  "orders": 13,
+  "avg_duration": 37.7,
+  "materials": 351
+ },
+ "by_type": {
+  "medical": 24,
+  "pharmaceutical": 0
+ },
+ "by_potential": {
+  "KOL": 8,
+  "A": 5,
+  "B": 5,
+  "C": 6
+ },
+ "materials": {
+  "vials": 100,
+  "meters": 60,
+  "reader": 0,
+  "brochure_m": 57,
+  "brochure_patient": 105,
+  "affiche": 29
+ },
+ "by_week": [
+  {
+   "week": "2026-06-08",
+   "count": 0
+  },
+  {
+   "week": "2026-06-15",
+   "count": 0
+  },
+  {
+   "week": "2026-06-22",
+   "count": 0
+  },
+  {
+   "week": "2026-06-29",
+   "count": 0
+  },
+  {
+   "week": "2026-07-06",
+   "count": 0
+  },
+  {
+   "week": "2026-07-13",
+   "count": 0
+  },
+  {
+   "week": "2026-07-20",
+   "count": 3
+  },
+  {
+   "week": "2026-07-27",
+   "count": 4
+  },
+  {
+   "week": "2026-08-03",
+   "count": 2
+  },
+  {
+   "week": "2026-08-10",
+   "count": 4
+  },
+  {
+   "week": "2026-08-17",
+   "count": 2
+  },
+  {
+   "week": "2026-08-24",
+   "count": 4
+  },
+  {
+   "week": "2026-08-31",
+   "count": 2
+  },
+  {
+   "week": "2026-09-07",
+   "count": 3
+  }
+ ],
+ "top_wilayas": [
+  {
+   "wilaya": "Alger",
+   "count": 12
+  },
+  {
+   "wilaya": "Blida",
+   "count": 12
+  }
+ ]
+}

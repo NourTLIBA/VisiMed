@@ -1,0 +1,421 @@
+{
+ "doctor": {
+  "id": 6,
+  "name": "Dr. Fatima Meziani",
+  "gender": "F",
+  "specialty": "Cardiologue",
+  "structure_type": "Cabinet Privé",
+  "potential": "KOL",
+  "gco_status": "Pas intéressé(e)",
+  "address": "Rue 32 Larbaa",
+  "wilaya": "Blida",
+  "commune": "Larbaa",
+  "telephone": "0650926215",
+  "email": "fatima.meziani@clinic.dz",
+  "owner": 3,
+  "created_at": "2026-09-07T11:56:52.658183+01:00",
+  "visit_count": 5,
+  "last_visit_date": "2026-09-06"
+ },
+ "visit_count": 5,
+ "last_visit_date": "2026-09-06",
+ "first_visit_date": "2026-08-11",
+ "products_presented": [
+  "Application GCO",
+  "GlucoReader Pro",
+  "GlucoReader X1",
+  "Insuline BasalGlar",
+  "Insuline RapidAct",
+  "Kit Éducation Patient",
+  "Lancettes Fine 33G"
+ ],
+ "material_given": {
+  "vials": 20,
+  "meters": 14,
+  "readers": 0,
+  "brochure_m": 8,
+  "brochure_patient": 29,
+  "affiche": 4
+ },
+ "orders": [
+  {
+   "id": 8,
+   "visit": "f78a0bc8b7c04352aae2dfa31e1688b1",
+   "doctor": 6,
+   "pharmacy": null,
+   "product": 2,
+   "product_name": "GlucoReader Pro",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "quantity": 8,
+   "status": "pending",
+   "note": "",
+   "created_at": "2026-09-07T11:56:53.220332+01:00"
+  },
+  {
+   "id": 3,
+   "visit": "d67bb9ba35534925b24cdf931ff05fe2",
+   "doctor": 6,
+   "pharmacy": null,
+   "product": 8,
+   "product_name": "Application GCO",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "quantity": 2,
+   "status": "cancelled",
+   "note": "",
+   "created_at": "2026-09-07T11:56:52.940142+01:00"
+  },
+  {
+   "id": 2,
+   "visit": "e0985e2bf10c4c85b6355696929da989",
+   "doctor": 6,
+   "pharmacy": null,
+   "product": 4,
+   "product_name": "Lancettes Fine 33G",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "quantity": 14,
+   "status": "pending",
+   "note": "",
+   "created_at": "2026-09-07T11:56:52.816703+01:00"
+  }
+ ],
+ "orders_count": 3,
+ "remarks": [
+  {
+   "date": "2026-09-06",
+   "text": "Bon accueil.",
+   "rep": "medrep1"
+  },
+  {
+   "date": "2026-09-02",
+   "text": "Suivi à faire.",
+   "rep": "medrep1"
+  },
+  {
+   "date": "2026-08-26",
+   "text": "Bon accueil.",
+   "rep": "medrep1"
+  }
+ ],
+ "objections": [
+  {
+   "date": "2026-09-06",
+   "text": "Préfère la molécule concurrente.",
+   "rep": "medrep1"
+  },
+  {
+   "date": "2026-09-02",
+   "text": "Prix jugé élevé.",
+   "rep": "medrep1"
+  },
+  {
+   "date": "2026-08-28",
+   "text": "Manque de données locales.",
+   "rep": "medrep1"
+  }
+ ],
+ "next_action": {
+  "date": "2026-09-11",
+  "text": "Programmer une réunion staff.",
+  "logged_on": "2026-09-06"
+ },
+ "visits": [
+  {
+   "id": "d67bb9ba35534925b24cdf931ff05fe2",
+   "date": "2026-09-06",
+   "created_at": "2026-09-07T11:56:52.897689+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 6,
+   "doctor_name": "Dr. Fatima Meziani",
+   "pharmacy": null,
+   "target_name": "Dr. Fatima Meziani",
+   "gender": "F",
+   "specialty": "Cardiologue",
+   "structure_type": "Cabinet Privé",
+   "potential": "KOL",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 32 Larbaa",
+   "wilaya": "Blida",
+   "commune": "Larbaa",
+   "telephone": "0650926215",
+   "email": "fatima.meziani@clinic.dz",
+   "patient_load": "30+",
+   "duration_minutes": 20,
+   "qty_reader": 0,
+   "qty_vials": 3,
+   "qty_meters": 4,
+   "qty_brochure_m": 0,
+   "qty_brochure_patient": 2,
+   "qty_affiche": 2,
+   "photo_url": null,
+   "comment": "Bon accueil.",
+   "objections": "Préfère la molécule concurrente.",
+   "next_action": "Programmer une réunion staff.",
+   "next_action_date": "2026-09-11",
+   "presented_products": [
+    {
+     "id": 12,
+     "product": 4,
+     "product_name": "Lancettes Fine 33G",
+     "samples_qty": 1
+    },
+    {
+     "id": 11,
+     "product": 6,
+     "product_name": "Insuline BasalGlar",
+     "samples_qty": 0
+    }
+   ],
+   "prescriptions": [
+    {
+     "id": 3,
+     "visit": "d67bb9ba35534925b24cdf931ff05fe2",
+     "doctor": 6,
+     "pharmacy": null,
+     "product": 8,
+     "product_name": "Application GCO",
+     "rep": 3,
+     "rep_username": "medrep1",
+     "quantity": 2,
+     "status": "cancelled",
+     "note": "",
+     "created_at": "2026-09-07T11:56:52.940142+01:00"
+    }
+   ]
+  },
+  {
+   "id": "e0985e2bf10c4c85b6355696929da989",
+   "date": "2026-09-02",
+   "created_at": "2026-09-07T11:56:52.768369+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 6,
+   "doctor_name": "Dr. Fatima Meziani",
+   "pharmacy": null,
+   "target_name": "Dr. Fatima Meziani",
+   "gender": "F",
+   "specialty": "Cardiologue",
+   "structure_type": "Cabinet Privé",
+   "potential": "KOL",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 32 Larbaa",
+   "wilaya": "Blida",
+   "commune": "Larbaa",
+   "telephone": "0650926215",
+   "email": "fatima.meziani@clinic.dz",
+   "patient_load": "30+",
+   "duration_minutes": 45,
+   "qty_reader": 0,
+   "qty_vials": 3,
+   "qty_meters": 6,
+   "qty_brochure_m": 0,
+   "qty_brochure_patient": 1,
+   "qty_affiche": 1,
+   "photo_url": null,
+   "comment": "Suivi à faire.",
+   "objections": "Prix jugé élevé.",
+   "next_action": "Programmer une réunion staff.",
+   "next_action_date": "2026-09-17",
+   "presented_products": [
+    {
+     "id": 6,
+     "product": 2,
+     "product_name": "GlucoReader Pro",
+     "samples_qty": 1
+    },
+    {
+     "id": 5,
+     "product": 6,
+     "product_name": "Insuline BasalGlar",
+     "samples_qty": 2
+    }
+   ],
+   "prescriptions": [
+    {
+     "id": 2,
+     "visit": "e0985e2bf10c4c85b6355696929da989",
+     "doctor": 6,
+     "pharmacy": null,
+     "product": 4,
+     "product_name": "Lancettes Fine 33G",
+     "rep": 3,
+     "rep_username": "medrep1",
+     "quantity": 14,
+     "status": "pending",
+     "note": "",
+     "created_at": "2026-09-07T11:56:52.816703+01:00"
+    }
+   ]
+  },
+  {
+   "id": "15b80492488347cb925acf6214d9c85c",
+   "date": "2026-08-28",
+   "created_at": "2026-09-07T11:56:52.742803+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 6,
+   "doctor_name": "Dr. Fatima Meziani",
+   "pharmacy": null,
+   "target_name": "Dr. Fatima Meziani",
+   "gender": "F",
+   "specialty": "Cardiologue",
+   "structure_type": "Cabinet Privé",
+   "potential": "KOL",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 32 Larbaa",
+   "wilaya": "Blida",
+   "commune": "Larbaa",
+   "telephone": "0650926215",
+   "email": "fatima.meziani@clinic.dz",
+   "patient_load": "0-15",
+   "duration_minutes": 60,
+   "qty_reader": 0,
+   "qty_vials": 2,
+   "qty_meters": 2,
+   "qty_brochure_m": 2,
+   "qty_brochure_patient": 12,
+   "qty_affiche": 0,
+   "photo_url": null,
+   "comment": "",
+   "objections": "Manque de données locales.",
+   "next_action": "Apporter des échantillons.",
+   "next_action_date": null,
+   "presented_products": [
+    {
+     "id": 3,
+     "product": 5,
+     "product_name": "Insuline RapidAct",
+     "samples_qty": 2
+    },
+    {
+     "id": 4,
+     "product": 8,
+     "product_name": "Application GCO",
+     "samples_qty": 0
+    }
+   ],
+   "prescriptions": []
+  },
+  {
+   "id": "71138b9c76844715b7bde9612582f840",
+   "date": "2026-08-26",
+   "created_at": "2026-09-07T11:56:53.299188+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 6,
+   "doctor_name": "Dr. Fatima Meziani",
+   "pharmacy": null,
+   "target_name": "Dr. Fatima Meziani",
+   "gender": "F",
+   "specialty": "Cardiologue",
+   "structure_type": "Cabinet Privé",
+   "potential": "KOL",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 32 Larbaa",
+   "wilaya": "Blida",
+   "commune": "Larbaa",
+   "telephone": "0650926215",
+   "email": "fatima.meziani@clinic.dz",
+   "patient_load": "16-30",
+   "duration_minutes": 45,
+   "qty_reader": 0,
+   "qty_vials": 4,
+   "qty_meters": 2,
+   "qty_brochure_m": 2,
+   "qty_brochure_patient": 5,
+   "qty_affiche": 1,
+   "photo_url": null,
+   "comment": "Bon accueil.",
+   "objections": "",
+   "next_action": "Apporter des échantillons.",
+   "next_action_date": null,
+   "presented_products": [
+    {
+     "id": 31,
+     "product": 1,
+     "product_name": "GlucoReader X1",
+     "samples_qty": 3
+    },
+    {
+     "id": 32,
+     "product": 7,
+     "product_name": "Kit Éducation Patient",
+     "samples_qty": 1
+    }
+   ],
+   "prescriptions": []
+  },
+  {
+   "id": "f78a0bc8b7c04352aae2dfa31e1688b1",
+   "date": "2026-08-11",
+   "created_at": "2026-09-07T11:56:53.194679+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 6,
+   "doctor_name": "Dr. Fatima Meziani",
+   "pharmacy": null,
+   "target_name": "Dr. Fatima Meziani",
+   "gender": "F",
+   "specialty": "Cardiologue",
+   "structure_type": "Cabinet Privé",
+   "potential": "KOL",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 32 Larbaa",
+   "wilaya": "Blida",
+   "commune": "Larbaa",
+   "telephone": "0650926215",
+   "email": "fatima.meziani@clinic.dz",
+   "patient_load": "16-30",
+   "duration_minutes": 45,
+   "qty_reader": 0,
+   "qty_vials": 8,
+   "qty_meters": 0,
+   "qty_brochure_m": 4,
+   "qty_brochure_patient": 9,
+   "qty_affiche": 0,
+   "photo_url": null,
+   "comment": "",
+   "objections": "",
+   "next_action": "",
+   "next_action_date": "2026-09-15",
+   "presented_products": [
+    {
+     "id": 26,
+     "product": 2,
+     "product_name": "GlucoReader Pro",
+     "samples_qty": 2
+    },
+    {
+     "id": 25,
+     "product": 6,
+     "product_name": "Insuline BasalGlar",
+     "samples_qty": 1
+    }
+   ],
+   "prescriptions": [
+    {
+     "id": 8,
+     "visit": "f78a0bc8b7c04352aae2dfa31e1688b1",
+     "doctor": 6,
+     "pharmacy": null,
+     "product": 2,
+     "product_name": "GlucoReader Pro",
+     "rep": 3,
+     "rep_username": "medrep1",
+     "quantity": 8,
+     "status": "pending",
+     "note": "",
+     "created_at": "2026-09-07T11:56:53.220332+01:00"
+    }
+   ]
+  }
+ ]
+}

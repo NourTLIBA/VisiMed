@@ -1,0 +1,43 @@
+{
+ "count": 3,
+ "next": null,
+ "previous": null,
+ "results": [
+  {
+   "id": 2,
+   "username": "manager1",
+   "email": "manager1@visimed.dz",
+   "first_name": "",
+   "last_name": "",
+   "role": "manager",
+   "assigned_regions": "",
+   "territory": null,
+   "telephone": "",
+   "is_active": true
+  },
+  {
+   "id": 3,
+   "username": "medrep1",
+   "email": "medrep1@visimed.dz",
+   "first_name": "",
+   "last_name": "",
+   "role": "med_rep",
+   "assigned_regions": "Alger,Blida",
+   "territory": null,
+   "telephone": "",
+   "is_active": true
+  },
+  {
+   "id": 4,
+   "username": "pharmrep1",
+   "email": "pharmrep1@visimed.dz",
+   "first_name": "",
+   "last_name": "",
+   "role": "pharma_rep",
+   "assigned_regions": "Oran,Mostaganem",
+   "territory": null,
+   "telephone": "",
+   "is_active": true
+  }
+ ]
+}

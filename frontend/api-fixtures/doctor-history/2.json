@@ -1,0 +1,190 @@
+{
+ "doctor": {
+  "id": 2,
+  "name": "Dr. Nadia Ouali",
+  "gender": "F",
+  "specialty": "Généraliste",
+  "structure_type": "Clinique",
+  "potential": "B",
+  "gco_status": "Pas intéressé(e)",
+  "address": "Rue 3 Hussein Dey",
+  "wilaya": "Alger",
+  "commune": "Hussein Dey",
+  "telephone": "0730408575",
+  "email": "nadia.ouali@clinic.dz",
+  "owner": 3,
+  "created_at": "2026-09-07T11:56:52.606825+01:00",
+  "visit_count": 2,
+  "last_visit_date": "2026-08-21"
+ },
+ "visit_count": 2,
+ "last_visit_date": "2026-08-21",
+ "first_visit_date": "2026-07-27",
+ "products_presented": [
+  "Application GCO",
+  "Bandelettes T-50",
+  "Insuline BasalGlar",
+  "Insuline RapidAct"
+ ],
+ "material_given": {
+  "vials": 4,
+  "meters": 10,
+  "readers": 0,
+  "brochure_m": 4,
+  "brochure_patient": 16,
+  "affiche": 3
+ },
+ "orders": [
+  {
+   "id": 13,
+   "visit": "6f717b3aa39d4fe6a6b9b0e16df03c5c",
+   "doctor": 2,
+   "pharmacy": null,
+   "product": 3,
+   "product_name": "Bandelettes T-50",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "quantity": 8,
+   "status": "delivered",
+   "note": "",
+   "created_at": "2026-09-07T11:56:53.569687+01:00"
+  }
+ ],
+ "orders_count": 1,
+ "remarks": [
+  {
+   "date": "2026-08-21",
+   "text": "Suivi à faire.",
+   "rep": "medrep1"
+  }
+ ],
+ "objections": [
+  {
+   "date": "2026-07-27",
+   "text": "Préfère la molécule concurrente.",
+   "rep": "medrep1"
+  }
+ ],
+ "next_action": {
+  "date": "2026-09-19",
+  "text": "Rappeler avec une étude clinique.",
+  "logged_on": "2026-08-21"
+ },
+ "visits": [
+  {
+   "id": "6f717b3aa39d4fe6a6b9b0e16df03c5c",
+   "date": "2026-08-21",
+   "created_at": "2026-09-07T11:56:53.545307+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 2,
+   "doctor_name": "Dr. Nadia Ouali",
+   "pharmacy": null,
+   "target_name": "Dr. Nadia Ouali",
+   "gender": "F",
+   "specialty": "Généraliste",
+   "structure_type": "Clinique",
+   "potential": "B",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 3 Hussein Dey",
+   "wilaya": "Alger",
+   "commune": "Hussein Dey",
+   "telephone": "0730408575",
+   "email": "nadia.ouali@clinic.dz",
+   "patient_load": "30+",
+   "duration_minutes": 60,
+   "qty_reader": 0,
+   "qty_vials": 1,
+   "qty_meters": 5,
+   "qty_brochure_m": 4,
+   "qty_brochure_patient": 10,
+   "qty_affiche": 2,
+   "photo_url": null,
+   "comment": "Suivi à faire.",
+   "objections": "",
+   "next_action": "Rappeler avec une étude clinique.",
+   "next_action_date": "2026-09-19",
+   "presented_products": [
+    {
+     "id": 46,
+     "product": 3,
+     "product_name": "Bandelettes T-50",
+     "samples_qty": 2
+    },
+    {
+     "id": 45,
+     "product": 5,
+     "product_name": "Insuline RapidAct",
+     "samples_qty": 0
+    }
+   ],
+   "prescriptions": [
+    {
+     "id": 13,
+     "visit": "6f717b3aa39d4fe6a6b9b0e16df03c5c",
+     "doctor": 2,
+     "pharmacy": null,
+     "product": 3,
+     "product_name": "Bandelettes T-50",
+     "rep": 3,
+     "rep_username": "medrep1",
+     "quantity": 8,
+     "status": "delivered",
+     "note": "",
+     "created_at": "2026-09-07T11:56:53.569687+01:00"
+    }
+   ]
+  },
+  {
+   "id": "b231dd5bbe0847cfb7614a74b0195308",
+   "date": "2026-07-27",
+   "created_at": "2026-09-07T11:56:53.147216+01:00",
+   "rep": 3,
+   "rep_username": "medrep1",
+   "visit_type": "medical",
+   "doctor": 2,
+   "doctor_name": "Dr. Nadia Ouali",
+   "pharmacy": null,
+   "target_name": "Dr. Nadia Ouali",
+   "gender": "F",
+   "specialty": "Généraliste",
+   "structure_type": "Clinique",
+   "potential": "B",
+   "gco_status": "Pas intéressé(e)",
+   "address": "Rue 3 Hussein Dey",
+   "wilaya": "Alger",
+   "commune": "Hussein Dey",
+   "telephone": "0730408575",
+   "email": "nadia.ouali@clinic.dz",
+   "patient_load": "0-15",
+   "duration_minutes": 30,
+   "qty_reader": 0,
+   "qty_vials": 3,
+   "qty_meters": 5,
+   "qty_brochure_m": 0,
+   "qty_brochure_patient": 6,
+   "qty_affiche": 1,
+   "photo_url": null,
+   "comment": "",
+   "objections": "Préfère la molécule concurrente.",
+   "next_action": "",
+   "next_action_date": null,
+   "presented_products": [
+    {
+     "id": 23,
+     "product": 6,
+     "product_name": "Insuline BasalGlar",
+     "samples_qty": 0
+    },
+    {
+     "id": 24,
+     "product": 8,
+     "product_name": "Application GCO",
+     "samples_qty": 3
+    }
+   ],
+   "prescriptions": []
+  }
+ ]
+}
