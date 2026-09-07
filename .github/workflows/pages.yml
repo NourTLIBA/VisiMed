@@ -1,0 +1,64 @@
+name: Deploy web to GitHub Pages
+
+# Publishes the Flutter web app to https://nourtliba.github.io/VisiMed/ .
+# GitHub Pages is static-only, so this is the FRONTEND only — the Django API
+# cannot run on GitHub. The deployed site works fully via the login screen's
+# "Accès démo" buttons (bundled sample data, no network). Real login / the
+# analytics screens need a live backend (see backend/DEPLOY.md).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.5'   # see release.yml — latest ships AGP 9
+
+      - name: Build web
+        working-directory: frontend
+        env:
+          VISIMED_API_URL: ${{ secrets.VISIMED_API_URL }}
+        run: |
+          flutter pub get
+          flutter build web --release \
+            --base-href "/VisiMed/" \
+            --dart-define=VISIMED_API_URL="${VISIMED_API_URL:-https://visimed-api.onrender.com/api}"
+          touch build/web/.nojekyll
+          cp build/web/index.html build/web/404.html   # deep-link fallback
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

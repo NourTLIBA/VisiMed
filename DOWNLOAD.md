@@ -2,10 +2,20 @@
 
 ## Web (any device — recommended)
 
-**https://visimed.netlify.app**
+- **GitHub Pages:** https://nourtliba.github.io/VisiMed/  *(fully hosted on
+  GitHub — front end only; use the "Accès démo" buttons, no backend needed)*
+- **Netlify:** https://visimed.netlify.app
 
 Works in any modern browser. On a phone, use "Add to home screen" for an
 app-like install (it's a PWA). Nothing to download.
+
+> **About the backend.** GitHub Pages is static-only — a Django API can't run
+> on GitHub. The Pages site is fully usable through the login screen's **Accès
+> démo** buttons (bundled sample data, zero network). *Real* login and the
+> analytics screens (Statistiques / Dashboard / Alerts / Leaderboard / map) need
+> a live API — deploy the backend to Render per [backend/DEPLOY.md](backend/DEPLOY.md)
+> and set the `VISIMED_API_URL` repo secret; the Pages and Netlify builds then
+> pick it up.
 
 ## Android
 
@@ -53,7 +63,12 @@ with no network needed.
   # → build/app/outputs/flutter-apk/app-release.apk
   ```
 - **Local web:** `flutter build web --release --dart-define=VISIMED_API_URL=...`
-  → `build/web/` (the Netlify deploy does this on every push to `main`).
+  → `build/web/` (the Netlify + GitHub Pages deploys do this on every push to
+  `main`).
+- **GitHub Pages:** `.github/workflows/pages.yml` builds the web app and
+  publishes it to `https://nourtliba.github.io/VisiMed/`. One-time: repo
+  **Settings → Pages → Source → GitHub Actions** (the workflow also tries to
+  enable it automatically).
 
 For a Play Store / App Store release you'd add real signing
 (`android/key.properties` + a keystore, an iOS provisioning profile) — out of

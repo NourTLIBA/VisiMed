@@ -7,8 +7,8 @@ statistics.
 
 - **Frontend** — Flutter (Android / iOS / web). `frontend/`
 - **Backend** — Django + Django REST Framework, Postgres in production. `backend/`
-- **Live web app** — your Netlify site (e.g. `https://visimed.netlify.app`)
-- **API** — `https://visimed-api.onrender.com/api` (the `visimed-api` Render service)
+- **Live web app** — https://nourtliba.github.io/VisiMed/ (GitHub Pages) · also Netlify
+- **API** — `https://visimed-api.onrender.com/api` (the `visimed-api` Render service — deploy per `backend/DEPLOY.md`)
 
 ---
 
@@ -16,9 +16,13 @@ statistics.
 
 ### Web — works on any device, nothing to install
 
-Open your Netlify site (the URL shown in the Netlify dashboard, e.g.
-`https://visimed.netlify.app`). On a phone, use *Add to home screen* for an
-app-like PWA install.
+Open **https://nourtliba.github.io/VisiMed/** (GitHub Pages) or the Netlify
+site. On a phone, *Add to home screen* for an app-like PWA install.
+
+GitHub Pages is static-only, so the Pages build is the **front end only** — a
+Django API can't run on GitHub. It's fully usable via the login screen's
+**Accès démo** buttons (bundled sample data, no network). Real login and the
+analytics screens need the API deployed to Render (`backend/DEPLOY.md`).
 
 ### Android
 
@@ -104,13 +108,18 @@ Both halves deploy from `main` via GitHub Actions.
 | | Host | Workflow | Trigger |
 |---|---|---|---|
 | Backend | Render (`render.yaml` Blueprint + free Postgres) | `deploy-backend.yml` | push to `main` under `backend/**` → test → Render deploy hook |
+| Frontend | **GitHub Pages** (`nourtliba.github.io/VisiMed/`) | `pages.yml` | push to `main` under `frontend/**` |
 | Frontend | Netlify | `deploy-frontend.yml` | push to `main` under `frontend/**` |
 | Release builds | GitHub Releases | `release.yml` | push a `v*` tag or run manually |
 
+GitHub Pages is static — it hosts the Flutter web app only; the Django API must
+live on Render (or another server). One-time: repo **Settings → Pages → Source →
+GitHub Actions**.
+
 One-time setup and every environment variable are documented in
-**[backend/DEPLOY.md](backend/DEPLOY.md)**. Required repo secrets:
-`RENDER_DEPLOY_HOOK_URL`, `VISIMED_API_URL`, `NETLIFY_AUTH_TOKEN`,
-`NETLIFY_SITE_ID`.
+**[backend/DEPLOY.md](backend/DEPLOY.md)**. Repo secrets: `VISIMED_API_URL`
+(optional — defaults to the Render URL), `RENDER_DEPLOY_HOOK_URL`,
+`NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`.
 
 ### `DEMO_MOCK`
 
@@ -141,7 +150,7 @@ backend/
   config/settings.py      env-gated; permissive in DEBUG, locked in prod
   CLAUDE.md           backend architecture — read before API work
   DEPLOY.md           Render + Netlify setup, env vars
-.github/workflows/   deploy-backend, deploy-frontend, release
+.github/workflows/   deploy-backend, deploy-frontend, pages, release
 DOWNLOAD.md          end-user "try it" guide
 inconsistencies.md   the 2026-08 audit; code comments reference its section numbers
 data/                client source CSVs; `seed_localities` reads Listes_items.csv
