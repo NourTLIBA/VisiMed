@@ -39,7 +39,11 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          # Pinned: latest stable ships AGP 9, which fails to apply the Flutter
+          # Gradle plugin against this project's legacy build.gradle.kts.
+          # Matches the version android/ was generated for. Bump only with
+          # `flutter upgrade` + regenerating android/.
+          flutter-version: '3.32.5'
           cache: true
 
       - name: Set up Android SDK
