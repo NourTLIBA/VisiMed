@@ -1,0 +1,41 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.visimed.demo"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+// Copy the frontend build/web into the app assets before building
+import org.gradle.api.tasks.Copy
+
+def repoRoot = rootProject.projectDir.parentFile ?: rootProject.projectDir
+def webBuildDir = new File(repoRoot, 'frontend/build/web')
+
+task copyWebAssets(type: Copy) {
+    from webBuildDir
+    into "$buildDir/processedAssets/release/www"
+    include '**/*'
+}
+
+preBuild.dependsOn(copyWebAssets)
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.21"
+}
