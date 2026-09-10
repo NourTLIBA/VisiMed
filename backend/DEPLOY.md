@@ -19,13 +19,15 @@ Both deploy from `main` via GitHub Actions.
      = your Netlify origin, e.g. `https://visimed.netlify.app`
      (no trailing slash; space- or comma-separate multiples).
 
-3. **Wire CI-triggered deploys**
-   - Render → `visimed-api` → **Settings → Deploy Hook** → copy the URL.
-   - GitHub repo → **Settings → Secrets and variables → Actions → New secret**
-     - `RENDER_DEPLOY_HOOK_URL` = that URL.
-   - Now every push to `main` under `backend/**` runs the test job, then POSTs
-     the hook (`.github/workflows/deploy-backend.yml`). `autoDeploy` is off in
-     the blueprint so this is the only trigger.
+3. **Deploys**
+   - `autoDeploy: true` in the blueprint — Render redeploys `visimed-api`
+     automatically on every push to `main` that touches `backend/**`.
+   - `.github/workflows/deploy-backend.yml` also runs the test suite on the
+     same pushes, independently — it's a CI check, not a deploy gate (a
+     failing test does **not** block the Render auto-deploy). To make tests
+     gate deploys instead, set `autoDeploy: false` and add
+     `RENDER_DEPLOY_HOOK_URL` as a repo secret (Render → `visimed-api` →
+     **Settings → Deploy Hook**) — the workflow already supports either mode.
 
 4. **First deploy** runs the build command, which migrates and seeds
    (`seed_users`, `seed_localities`, `seed_products`, `backfill_targets` — all
